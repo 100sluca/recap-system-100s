@@ -11,6 +11,9 @@
 
 param([switch]$Off)
 
+# Les messages en UTF-8 : activer.mjs les relit ainsi.
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+
 $ici = Split-Path -Parent $MyInvocation.MyCommand.Path
 $dest = Join-Path $env:USERPROFILE '.claude\recap-system-100s\overlay'
 $overlay = Join-Path $dest 'overlay.ps1'
