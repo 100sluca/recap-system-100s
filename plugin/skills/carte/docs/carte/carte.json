@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Comment marche le skill carte",
+    "quality_profile": "showcase",
+    "legend": {
+      "entries": {
+        "external": { "label": "Toi" },
+        "backend": { "label": "Code qui tourne" },
+        "database": { "label": "Fichiers" },
+        "cloud": { "label": "Outil tiers" },
+        "frontend": { "label": "Ce que tu ouvres" }
+      }
+    }
+  },
+  "components": [
+    { "id": "toi", "type": "external", "icon": "person", "label": "Toi", "sublabel": "une demande", "pos": [40, 250], "size": [110, 64] },
+    { "id": "skillmd", "type": "database", "label": "SKILL.md", "sublabel": "consignes · 178 lignes", "pos": [140, 70], "size": [150, 60] },
+    { "id": "refs", "type": "database", "label": "references/", "sublabel": "doc Archify pour Claude", "pos": [310, 70], "size": [160, 60] },
+    { "id": "claude", "type": "backend", "label": "Claude Code", "sublabel": "suit SKILL.md", "pos": [230, 250], "size": [150, 64] },
+    { "id": "source", "type": "database", "label": "nom.json", "sublabel": "docs/carte/ · la source", "pos": [450, 250], "size": [150, 64] },
+    { "id": "prepare", "type": "backend", "label": "carte.mjs · 1/2", "sublabel": "prépare le JSON", "pos": [680, 250], "size": [140, 64] },
+    { "id": "finalize", "type": "backend", "label": "archify finalize", "sublabel": "bin/archify.mjs", "pos": [930, 250], "size": [160, 64] },
+    { "id": "chrome", "type": "cloud", "label": "Google Chrome", "sublabel": "3 · vérifie, sans fenêtre", "pos": [935, 70], "size": [150, 60] },
+    { "id": "schemas", "type": "database", "label": "schemas/", "sublabel": "1 · valide le JSON", "pos": [850, 420], "size": [150, 60] },
+    { "id": "renderers", "type": "backend", "label": "renderers/", "sublabel": "2 · dessine la page", "pos": [1020, 420], "size": [150, 60] },
+    { "id": "theme", "type": "database", "label": "theme/", "sublabel": "100s.css + 4 polices", "pos": [1220, 70], "size": [150, 60] },
+    { "id": "habille", "type": "backend", "label": "carte.mjs · 2/2", "sublabel": "habille en 100s", "pos": [1220, 250], "size": [150, 64] },
+    { "id": "page", "type": "frontend", "label": "nom.html", "sublabel": "docs/carte/ · tu l'ouvres", "pos": [1440, 250], "size": [150, 64] }
+  ],
+  "boundaries": [
+    { "kind": "region", "label": "moteur/archify · MIT · jamais modifié", "wraps": ["finalize", "schemas", "renderers"] }
+  ],
+  "connections": [
+    { "id": "demande", "from": "toi", "to": "claude", "label": "demande", "variant": "emphasis" },
+    { "id": "consignes", "from": "skillmd", "to": "claude", "label": "consignes", "variant": "dashed", "fromSide": "bottom", "toSide": "top" },
+    { "id": "regles", "from": "refs", "to": "claude", "label": "règles", "variant": "dashed", "fromSide": "bottom", "toSide": "top" },
+    { "id": "ecrit", "from": "claude", "to": "source", "label": "écrit", "variant": "emphasis" },
+    { "id": "dessiner", "from": "source", "to": "prepare", "label": "dessiner", "variant": "emphasis" },
+    { "id": "lance", "from": "prepare", "to": "finalize", "label": "lance", "variant": "emphasis" },
+    { "id": "valide", "from": "finalize", "to": "schemas", "fromSide": "bottom", "toSide": "top" },
+    { "id": "dessine", "from": "finalize", "to": "renderers", "fromSide": "bottom", "toSide": "top" },
+    { "id": "verifie", "from": "finalize", "to": "chrome", "fromSide": "top", "toSide": "bottom" },
+    { "id": "page-verifiee", "from": "finalize", "to": "habille", "label": "page vérifiée", "variant": "emphasis" },
+    { "id": "habillage", "from": "theme", "to": "habille", "label": "lu", "variant": "dashed", "fromSide": "bottom", "toSide": "top" },
+    { "id": "range", "from": "habille", "to": "page", "label": "range", "variant": "emphasis" }
+  ],
+  "cards": [
+    { "dot": "emerald", "title": "Notre code · environ 320 lignes", "items": ["carte.mjs : prépare le JSON, lance Archify, habille la page, la range", "theme/100s.css : une couleur franche par famille, clair et sombre", "SKILL.md : les consignes que Claude suit"] },
+    { "dot": "violet", "title": "Le moteur Archify · environ 50 000 lignes", "items": ["bin/archify.mjs : la commande (finalize, validate, render…)", "renderers/ : placement des boîtes et tracé des flèches", "assets/template.html : la page interactive (zoom, thème, export)", "Jamais modifié : node carte.mjs maj le met à jour"] },
+    { "dot": "amber", "title": "Pour redessiner", "items": ["node carte.mjs dessiner <type> docs/carte/<nom>.json", "Il faut Node et Google Chrome, rien à installer"] }
+  ]
+}

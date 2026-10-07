@@ -1,0 +1,16 @@
+# Personnel : jamais publié.
+# La banque-son (musiques et bruitages) appartient à chacun : on la branche avec les réglages.
+banque-son/
+# Les notes d'essais et de recherche de l'auteur.
+notes/
+
+# Téléchargé au premier usage, hors du dépôt (~/.claude/recap-system-100s/archify).
+plugin/skills/carte/moteur/
+
+# Généré par Claude Code au chargement du bandeau.
+plugin/.claude-plugin/types/
+
+node_modules/
+.DS_Store
+Thumbs.db
+desktop.ini

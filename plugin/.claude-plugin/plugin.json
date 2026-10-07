@@ -1,0 +1,11 @@
+{
+  "name": "recap-system-100s",
+  "version": "1.0.0",
+  "description": "Le mode récap d'un projet de code : 5 pièces tenues à jour dans __recap-system-100s/ (démarrer, ressources, fabrication, schémas, vidéo), leur fraîcheur mesurée sur le code, un bandeau au-dessus de la saisie et un overlay sur l'écran",
+  "author": { "name": "100s", "url": "https://github.com/100sluca" },
+  "homepage": "https://github.com/100sluca/recap-system-100s",
+  "repository": "https://github.com/100sluca/recap-system-100s",
+  "license": "MIT",
+  "keywords": ["recap", "documentation", "architecture", "archify", "remotion", "overlay"],
+  "types": "./types/index.d.ts"
+}

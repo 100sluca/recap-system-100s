@@ -1,0 +1,15 @@
+{
+  "name": "recap-system-100s",
+  "owner": { "name": "100s", "url": "https://github.com/100sluca" },
+  "metadata": {
+    "description": "Le mode recap-system-100s : le récap de chaque projet de code (démarrer, ressources, fabrication, schémas, vidéo), son bandeau dans Claude Code et son overlay sur l'écran"
+  },
+  "plugins": [
+    {
+      "name": "recap-system-100s",
+      "source": "./plugin",
+      "description": "Le mode récap d'un projet de code : 5 pièces tenues à jour, leur fraîcheur, un bandeau et un overlay",
+      "version": "1.0.0"
+    }
+  ]
+}

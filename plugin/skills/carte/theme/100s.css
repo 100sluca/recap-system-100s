@@ -1,0 +1,124 @@
+/* Habillage 100s des cartes Archify.
+   Posé par carte.mjs par-dessus le preset « editorial » d'Archify, sans toucher
+   au moteur. Les blocs de couleur n'ont pas de préfixe d'élément : l'export
+   PNG/SVG d'Archify relit les variables sur un <div data-preset data-theme>,
+   un sélecteur html[...] ne serait pas vu.
+   Une famille = une teinte franche (choix du 06/10/2026) : blanc sources,
+   vert calcul, jaune services, violet stockage, bleu sorties. */
+
+/* ---------- couleurs (clair) ---------- */
+[data-preset="editorial"][data-theme="light"] {
+  --bg: #f2f1ed;
+  --grid: rgba(22, 17, 12, 0.06);
+  --canvas-dot: rgba(22, 17, 12, 0.10);
+  --panel: #ffffff;
+  --panel-border: rgba(22, 17, 12, 0.10);
+  --lane-fill: rgba(235, 232, 226, 0.55);
+  --lane-stroke: #d8d0c7;
+  --text: #16110c;
+  --text-muted: #5b544d;
+  --text-dim: #9a918a;
+  --text-faint: #6f665e;
+  --mask: #ffffff;
+  --external-fill: #ffffff;   --external-stroke: #8a8178;
+  --backend-fill: #dcf5e8;    --backend-stroke: #0f9d63;
+  --cloud-fill: #fff2c2;      --cloud-stroke: #d49a00;
+  --database-fill: #ece3ff;   --database-stroke: #7c4ddb;
+  --frontend-fill: #dcefff;   --frontend-stroke: #1f7fd6;
+  --security-fill: #ffe1e6;   --security-stroke: #e0334f;
+  --messagebus-fill: #ffe7d6; --messagebus-stroke: #f06a12;
+  --arrow: #9a918a;
+  --arrow-emphasis: #ff5f00;
+  --toolbar-bg: rgba(255, 255, 255, 0.92);
+  --toolbar-border: rgba(22, 17, 12, 0.12);
+  --toolbar-text: #16110c;
+  --toolbar-hover: #ffffff;
+  --toolbar-menu-bg: #ffffff;
+}
+
+/* ---------- couleurs (sombre) ---------- */
+[data-preset="editorial"][data-theme="dark"] {
+  --bg: #16110c;
+  --grid: rgba(242, 241, 237, 0.06);
+  --canvas-dot: rgba(242, 241, 237, 0.08);
+  --panel: #1f1914;
+  --panel-border: rgba(242, 241, 237, 0.12);
+  --lane-fill: rgba(242, 241, 237, 0.03);
+  --lane-stroke: #3a322b;
+  --text: #f2f1ed;
+  --text-muted: #b5aca3;
+  --text-dim: #6f665e;
+  --text-faint: #8f857b;
+  --mask: #1f1914;
+  --external-fill: rgba(242, 241, 237, 0.06);  --external-stroke: #e9e4dc;
+  --backend-fill: rgba(52, 211, 153, 0.16);    --backend-stroke: #4ade9a;
+  --cloud-fill: rgba(251, 191, 36, 0.16);      --cloud-stroke: #fcc93a;
+  --database-fill: rgba(167, 139, 250, 0.20);  --database-stroke: #b49cff;
+  --frontend-fill: rgba(56, 170, 248, 0.18);   --frontend-stroke: #5cb8ff;
+  --security-fill: rgba(251, 113, 133, 0.18);  --security-stroke: #fb7f95;
+  --messagebus-fill: rgba(251, 146, 60, 0.18); --messagebus-stroke: #fb9a4f;
+  --arrow: #6f665e;
+  --arrow-emphasis: #ff7424;
+  --toolbar-bg: rgba(31, 25, 20, 0.92);
+  --toolbar-border: rgba(242, 241, 237, 0.14);
+  --toolbar-text: #f2f1ed;
+  --toolbar-hover: #2a231c;
+  --toolbar-menu-bg: #1f1914;
+}
+
+/* ---------- typographie ---------- */
+html[data-preset="editorial"] body { font-family: 'Funnel Sans', system-ui, sans-serif; }
+html[data-preset="editorial"] h1,
+html[data-preset="editorial"] .card h3 {
+  font-family: 'Funnel Display', 'Funnel Sans', system-ui, sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+html[data-preset="editorial"] h1 { font-size: 2rem; }
+html[data-preset="editorial"] .header-row::after,
+html[data-preset="editorial"] .diagram-container::after {
+  font-family: 'Martian Mono', ui-monospace, monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+/* Le texte du schéma reste en chasse fixe : le moteur calcule la taille des
+   boîtes pour une police monospace. Geist Mono a la chasse de JetBrains Mono. */
+svg[data-preset="editorial"],
+html[data-preset="editorial"] svg {
+  font-family: 'Geist Mono', 'JetBrains Mono', ui-monospace, monospace;
+}
+
+/* ---------- surfaces et signature ---------- */
+html[data-preset="editorial"] body {
+  background-image: radial-gradient(color-mix(in srgb, var(--text) 9%, transparent) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+html[data-preset="editorial"] .diagram-container {
+  border-radius: 14px;
+  background: var(--panel);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--text) 5%, transparent), 0 24px 60px -30px rgba(22, 17, 12, 0.35);
+}
+html[data-preset="editorial"] .pulse-dot { border-radius: 2px; transform: none; }
+html[data-preset="editorial"] .header-row::after {
+  content: "recap-system-100s / carte du projet";
+  font-style: normal;
+  font-weight: 500;
+}
+html[data-preset="editorial"] .diagram-container::after {
+  content: "recap-system-100s";
+  font-style: normal;
+  font-weight: 500;
+  border-radius: 999px;
+}
+html[data-preset="editorial"] .toolbar { border-radius: 999px; }
+/* Une seule apparence : le menu des presets d'Archify est masqué. */
+html[data-preset="editorial"] .toolbar .preset-wrap { display: none; }
+
+/* Boîtes posées comme des cartes (ombre douce, comme le preset classic). */
+html[data-preset="editorial"][data-theme="light"] .diagram-container > svg [data-node-id] > rect:not(.c-mask) {
+  filter: drop-shadow(0 1px 1px rgba(22, 17, 12, 0.05)) drop-shadow(0 6px 12px rgba(22, 17, 12, 0.07));
+}
+html[data-preset="editorial"][data-theme="dark"] .diagram-container > svg [data-node-id] > rect:not(.c-mask) {
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4));
+}
