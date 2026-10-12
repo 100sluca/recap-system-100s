@@ -5,6 +5,10 @@ description: "Crée ou met à jour FABRICATION.md d'un projet de code (dans __re
 
 # fabrication : de quoi le projet est fait, et pourquoi
 
+**Avant tout** : `node "${CLAUDE_SKILL_DIR}/../recap-system-100s/version.mjs" fabrication`. S'il répond
+« PÉRIMÉE » (une session ouverte avant une mise à jour du plugin garde l'ancienne version), suivre
+le SKILL.md qu'il indique, avec ses outils, et non celui-ci.
+
 ## Pourquoi
 
 Des mois plus tard, on veut retrouver trois choses sans rien se rappeler :

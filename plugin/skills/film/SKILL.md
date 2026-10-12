@@ -5,6 +5,10 @@ description: "Fait la vidéo de présentation d'un projet en motion design (Remo
 
 # film : la vidéo d'un projet, en motion design
 
+**Avant tout** : `node "${CLAUDE_SKILL_DIR}/../recap-system-100s/version.mjs" film`. S'il répond
+« PÉRIMÉE » (une session ouverte avant une mise à jour du plugin garde l'ancienne version), suivre
+le SKILL.md qu'il indique, avec ses outils, et non celui-ci.
+
 ## Pourquoi
 
 Pour montrer un projet (le sien ou celui d'un client) : 40 secondes à 2 minutes de motion design

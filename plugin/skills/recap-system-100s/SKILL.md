@@ -8,6 +8,10 @@ argument-hint: "[-sc | -r | -f | -a | -v | -maj | -final | -nom \"<nom>\" | -ove
 
 Argument reçu : `$ARGUMENTS`
 
+**Avant tout** : `node "${CLAUDE_SKILL_DIR}/../recap-system-100s/version.mjs" recap-system-100s`. S'il répond
+« PÉRIMÉE » (une session ouverte avant une mise à jour du plugin garde l'ancienne version), suivre
+le SKILL.md qu'il indique, avec ses outils, et non celui-ci.
+
 ## Pourquoi
 
 Pour chaque projet, on veut comprendre ses fondations, et pouvoir le relancer, l'expliquer et

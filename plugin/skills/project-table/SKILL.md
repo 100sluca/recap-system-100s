@@ -5,6 +5,10 @@ description: "Crée ou met à jour RESSOURCES.md d'un projet de code (dans __rec
 
 # project-table : les ressources d'un projet, en tableaux
 
+**Avant tout** : `node "${CLAUDE_SKILL_DIR}/../recap-system-100s/version.mjs" project-table`. S'il répond
+« PÉRIMÉE » (une session ouverte avant une mise à jour du plugin garde l'ancienne version), suivre
+le SKILL.md qu'il indique, avec ses outils, et non celui-ci.
+
 ## Pourquoi
 
 On a souvent plusieurs comptes Google, plusieurs projets Supabase et plusieurs

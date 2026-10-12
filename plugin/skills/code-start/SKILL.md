@@ -5,6 +5,10 @@ description: "Crée ou met à jour le duo « fiche mémo (.txt) + lanceur » d'u
 
 # code-start : fiche mémo + lanceur d'un projet
 
+**Avant tout** : `node "${CLAUDE_SKILL_DIR}/../recap-system-100s/version.mjs" code-start`. S'il répond
+« PÉRIMÉE » (une session ouverte avant une mise à jour du plugin garde l'ancienne version), suivre
+le SKILL.md qu'il indique, avec ses outils, et non celui-ci.
+
 ## Pourquoi
 
 On mène plusieurs projets de code en parallèle et on revient dessus après des semaines. À

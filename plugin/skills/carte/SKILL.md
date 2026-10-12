@@ -5,6 +5,10 @@ description: "Dessine les cartes d'un projet en pages HTML interactives à l'hab
 
 # carte : la carte d'un projet
 
+**Avant tout** : `node "${CLAUDE_SKILL_DIR}/../recap-system-100s/version.mjs" carte`. S'il répond
+« PÉRIMÉE » (une session ouverte avant une mise à jour du plugin garde l'ancienne version), suivre
+le SKILL.md qu'il indique, avec ses outils, et non celui-ci.
+
 ## Pourquoi
 
 On veut comprendre ce qu'on construit et pouvoir le refaire seul. Une carte

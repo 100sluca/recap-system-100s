@@ -144,6 +144,10 @@ un projet.
 /plugin uninstall recap-system-100s@recap-system-100s
 ```
 
+Une session déjà ouverte garde la version du plugin qu'elle a chargée à son ouverture, même après
+une mise à jour. Depuis la 1.2.1, chaque skill vérifie au démarrage qu'il est bien la version
+installée. Sinon, il suit la version à jour et te le dit : tu n'as pas à rouvrir tes sessions.
+
 ## Bon à savoir
 
 - Les skills et les documents produits sont en français.
