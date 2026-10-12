@@ -78,7 +78,7 @@ mon-projet/
     2-ressources/           RESSOURCES.md
     3-fabrication/          FABRICATION.md
     4-archi/                les schémas (.json source + .html à ouvrir)
-    5-video/                mon-projet-v1.mp4, son storyboard, sa source, son bilan
+    5-video/                mon-projet-v1.mp4, son storyboard, sa recette, sa source, son bilan
 ```
 
 - **La fraîcheur** : chaque commit qui touche ce que décrit une pièce lui coûte 12 points, chaque
@@ -99,14 +99,28 @@ mon-projet/
 | Réglage | Sert à |
 |---|---|
 | `fiches` | un dossier où recopier aussi chaque fiche et son lanceur, pour les lancer d'un double-clic (ex. `~/Desktop/Projets`) |
-| `banqueSon` | ta banque de sons pour les vidéos : un dossier avec `musique/` et, pour les bruitages, un `bruitages.json` |
+| `banqueSon` | ta banque de sons pour les vidéos : un dossier avec `musique/` et, pour les bruitages, un `bruitages.json` (voir plus bas) |
 | `musique` | la musique par défaut des vidéos |
 | `ateliers` | où créer les ateliers des vidéos (par défaut `~/recap-film`) |
 | `envGemini` | pour la voix off IA : le fichier `.env` où est ta clé Gemini (par défaut `~/.claude/recap-system-100s/.env` ; le chemin, jamais la clé) |
 | `voix` | la voix IA par défaut (Achird ; ou Charon, Sulafat, Kore…) |
+| `musiqueSousVoix` | de combien de dB la musique passe sous la voix off (18 par défaut ; plus grand = plus discrète) |
 
 **Aucune musique n'est livrée** : chacun utilise la sienne. Sans banque-son, Claude te demande un
 fichier audio pour chaque vidéo, ou la fait muette.
+
+**Les bruitages** : `bruitages.json` nomme les fichiers de ta banque, rangés par famille, par exemple
+`{"clic": {"clic.wav": "sound-effects/click.wav"}, "swoosh": {"swoosh-1.wav": "…", "swoosh-2.wav": "…"}}`.
+Plus la palette est large, plus les films varient : un même son ne revient pas plus de 3 fois par film.
+Les étapes qui se suivent prennent le même son, un cran plus aigu à chaque fois.
+
+**Le volume** : chaque morceau et chaque bruitage est mesuré, puis ramené à un niveau de base. La
+musique passe ainsi 18 dB sous la voix, quel que soit le morceau. Après chaque rendu, Claude mesure
+le son du film et corrige ce qui couvre la voix avant de te le montrer.
+
+**La recette** : chaque vidéo livrée a sa `-recette.md`. Elle note le style, la DA, la musique, la
+voix et les niveaux, avec une planche de neuf images. Pour refaire une vidéo dans le même esprit,
+demande « refais un film avec la recette de mon-projet v2 ».
 
 **La voix off** : Claude écrit un pitch (le problème, la solution, comment ça marche, la preuve) et
 te le fait valider. La voix IA est [Gemini 3.8 Flash TTS](https://ai.google.dev/gemini-api/docs/speech-generation),

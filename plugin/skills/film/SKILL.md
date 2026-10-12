@@ -1,6 +1,6 @@
 ---
 name: film
-description: "Fait la vidéo de présentation d'un projet en motion design (Remotion, en 2D et en 3D avec Three.js), dans la DA du projet ou d'un client (relevée sur son site : couleurs, polices, logo ; ou un duo client × entreprise), dans un style de motion choisi par l'utilisateur sur des aperçus (keynote, démo produit, fil conducteur, teaser, plan-séquence, et en option un court-métrage 3D), où l'on voit le produit s'utiliser, avec une caméra toujours en mouvement et du flou de mouvement, calée sur une musique de sa banque-son ou un fichier qu'il donne, avec des bruitages et, au choix, une voix off qui pitche le projet (problème, solution, comment ça marche : voix IA Gemini, ou la voix de l'utilisateur enregistrée en doublage sur le film), et la range dans __recap-system-100s/5-video/ du projet (v1, v2… jamais écrasées) avec son storyboard, son code et son bilan (temps par étape, appels au modèle, agents, jetons, durée du rendu). À utiliser dès que l'utilisateur demande une vidéo, un film, un teaser, une bande-annonce, du motion design, une présentation animée d'un projet, d'un site ou d'un produit (le sien ou celui d'un client), /recap-system-100s -video ou -v, ou veut refaire, améliorer ou changer le style ou la DA d'une vidéo existante, même s'il ne dit ni « film » ni « Remotion »."
+description: "Fait la vidéo de présentation d'un projet en motion design (Remotion, en 2D et en 3D avec Three.js), dans la DA du projet ou d'un client (relevée sur son site : couleurs, polices, logo ; ou un duo client × entreprise), dans un style de motion choisi par l'utilisateur sur des aperçus (keynote, démo produit, fil conducteur, teaser, plan-séquence, et en option un court-métrage 3D), où l'on voit le produit s'utiliser, avec une caméra toujours en mouvement et du flou de mouvement, calée sur une musique de sa banque-son ou un fichier qu'il donne, avec des bruitages et, au choix, une voix off qui pitche le projet (problème, solution, comment ça marche : voix IA Gemini, ou la voix de l'utilisateur enregistrée en doublage sur le film), et la range dans __recap-system-100s/5-video/ du projet (v1, v2… jamais écrasées) avec son storyboard, sa recette, son code et son bilan (temps par étape, appels au modèle, agents, jetons, durée du rendu). À utiliser dès que l'utilisateur demande une vidéo, un film, un teaser, une bande-annonce, du motion design, une présentation animée d'un projet, d'un site ou d'un produit (le sien ou celui d'un client), /recap-system-100s -video ou -v, ou veut refaire, améliorer ou changer le style ou la DA d'une vidéo existante, ou en faire une nouvelle avec les choix d'une précédente (sa recette : style, DA, musique, voix, niveaux), même s'il ne dit ni « film » ni « Remotion »."
 ---
 
 # film : la vidéo d'un projet, en motion design
@@ -40,8 +40,9 @@ Une DA propre, un style choisi, une histoire propre au projet, une musique diff�
     communs) ; **`src/styles/`** (un dossier par style : `kit.tsx` et `Apercu.tsx` ; `commun.tsx`
     avec `adapterDA`, `camera2D`, `prog`, `ressort`… ; `interface.tsx` : les briques des films
     produit et le flou de mouvement ; `catalogue.json`) ; `src/monde/` (le kit du
-    Monde en cubes) ; `Son.tsx` (musique et bruitages ; `<Musique />` joue aussi la voix off et se
-    baisse dessous) ; `Voix.tsx` + `pitch.ts` (la voix off : `p(i)`, l'image où commence la phrase
+    Monde en cubes) ; `Son.tsx` (musique et bruitages, chacun ramené à son niveau de base ;
+    `<Musique />` joue aussi la voix off et passe 18 dB sous elle ; `<Effet ton>` et `<Suite />`
+    pour les suites d'étapes qui montent d'un cran à chaque fois) ; `Voix.tsx` + `pitch.ts` (la voix off : `p(i)`, l'image où commence la phrase
     i ; `phraseA(f)` pour des sous-titres) ; un film de départ neutre.
   - `styles/` : une fiche par style (l'idée, la DA, le mouvement, le son, le kit, une trame
     possible) et `styles/apercus/` (les aperçus livrés : `catalogue.html`, `catalogue.mp4`).
@@ -50,9 +51,10 @@ Une DA propre, un style choisi, une histoire propre au projet, une musique diff�
   - `outils/` : `nouveau.mjs` (crée l'atelier, pose la DA puis la musique), `musique.mjs` (propose une musique qui va avec le style et change d'un film à l'autre), `da.mjs` (relève la DA
     d'un site, l'installe dans un atelier), `apercus.mjs` (les styles rendus dans la DA du projet,
     pour choisir), `capturer.mjs` (captures du vrai site), `tempo.mjs`, `rendre.mjs` (planches et
-    film), `livrer.mjs` (rangement + bilan), `bilan.mjs`, `typeface.mjs` (une police en lettres 3D),
+    film), `livrer.mjs` (rangement, recette et bilan), `bilan.mjs`, `typeface.mjs` (une police en lettres 3D),
     `voix.mjs` (la voix off : voix IA, minutage prévu pour le doublage, import d'un enregistrement),
-    `doublage.mjs` (le studio où l'utilisateur s'enregistre sur le film).
+    `doublage.mjs` (le studio où l'utilisateur s'enregistre sur le film), `sonie.mjs` (mesure le
+    volume perçu de chaque son, puis contrôle le mix du film rendu).
   - `references/` : `da.md`, `pitch.md`, `regles-communes.md`, `storyboard.md`, `recettes-3d.md`,
     `pieges.md`.
   - `exemples/` : les films de luca100s.fr (style Monde en cubes), à lire pour la méthode.
@@ -67,11 +69,12 @@ Dans les commandes, `OUTILS` désigne `"${CLAUDE_SKILL_DIR}/outils"`.
   ffmpeg de Remotion) ni sous `%LOCALAPPDATA%` (l'application Claude y redirige ses écritures).
   Une fois la vidéo livrée, son code est dans `5-video/` : l'atelier peut être supprimé.
 - **La livraison** : `<projet>/__recap-system-100s/5-video/` : `<projet>-vN.mp4`, plus
-  `-storyboard.md`, `-pitch.md` (s'il y a une voix off), `-source/` et `-bilan.md`. Une nouvelle
-  version n'efface jamais la précédente.
+  `-storyboard.md`, `-pitch.md` (s'il y a une voix off), `-recette.md` et `-planche.png` (les
+  choix du film et neuf de ses images, pour en refaire un pareil), `-source/` et `-bilan.md`. Une
+  nouvelle version n'efface jamais la précédente.
 - **Les sons** : la banque-son de l'utilisateur (réglage `banqueSon` : un dossier avec `musique/`
-  et, pour les bruitages, un `bruitages.json` qui nomme ses fichiers), ou un fichier audio qu'il
-  donne. Les réglages : `node "${CLAUDE_SKILL_DIR}/../recap-system-100s/reglages.mjs"`.
+  et, pour les bruitages, un `bruitages.json` qui nomme ses fichiers, à plat ou par famille), ou un
+  fichier audio qu'il donne. Leurs niveaux : `references/regles-communes.md`, « Le son ». Les réglages : `node "${CLAUDE_SKILL_DIR}/../recap-system-100s/reglages.mjs"`.
 
 ## Le circuit
 
@@ -83,8 +86,13 @@ Noter chaque étape dans le journal **au moment où elle commence** : c'est ce q
    le projet de l'utilisateur, ou un client (alors : quel client, son site ; et l'entreprise de
    l'utilisateur doit-elle signer ?). Ne demander que ce qui ne se devine pas.
    `node OUTILS/nouveau.mjs --projet <nom> --version <N> [--da <dossier|marque>] [--style <id>]`
-   crée l'atelier (modèle, bruitages, paquets) **sans la musique** (elle vient après le style) et
-   ouvre le journal (« Préparation »).
+   crée l'atelier (modèle, bruitages mesurés, paquets) **sans la musique** (elle vient après le
+   style) et ouvre le journal (« Préparation »). Il affiche la palette des bruitages par famille.
+   **Refaire un film comme un précédent** (« le même que la v2 », « reprends la recette de… ») :
+   lire son `<projet>-vN-recette.md` dans `5-video/`, puis créer l'atelier avec
+   `--recette "<chemin du fichier>"`. Il reprend la DA, la musique et les niveaux, et rappelle le
+   style et la voix. Les étapes 2 et 3 se réduisent alors à confirmer ce qui change (un autre
+   projet garde-t-il cette DA ?). Pas d'aperçus à refaire.
 2. **La DA** (étape « DA »). D'après `references/da.md` : la DA du projet (son code, son site),
    celle du client (`node OUTILS/da.mjs <url> --marque <nom>`), un duo (demander l'équilibre :
    client d'abord, partenariat, ou entreprise d'abord), ou, pour un projet sans charte, la palette
@@ -132,14 +140,19 @@ Noter chaque étape dans le journal **au moment où elle commence** : c'est ce q
    `references/storyboard.md` : la DA, le style, la musique en tête ; **une histoire propre à ce
    projet**, dite dans la langue du style. Durée en temps de musique, coupes sur les mesures ; avec
    une voix off, un plan par phrase du pitch, coupé sur `p(i)`.
-   Montrer à l'utilisateur le storyboard en quelques lignes et continuer sans attendre.
+   Il finit par **la carte des sons** : quel son pour quelle sorte d'événement, et les suites
+   d'étapes qui montent. Montrer à l'utilisateur le storyboard en quelques lignes et continuer
+   sans attendre.
 7. **Plans** (étape « Plans »). Écrire le film dans `src/` avec les briques communes
    (`src/styles/interface.tsx` : curseur, fenêtre, verre, halo, texte tapé, flou de mouvement), le
    kit du style (`src/styles/<id>/`, son `Apercu.tsx` comme exemple complet) et la DA adaptée au
    style : `const da = adapterDA('<id>', DA_FILM)` puis `<AvecDA da={da}>`, tout le film dans
    `<Flou>` (les planches se rendent sans lui : `rendre.mjs` passe `rapide`). `NB_TEMPS` dans `reglages.ts` =
    durée du film (avec une voix off : au moins `DEBUT_VOIX` + `DUREE_VOIX` + 2 s). Lire
-   `references/regles-communes.md` (et `references/recettes-3d.md` pour la 3D).
+   `references/regles-communes.md` (et `references/recettes-3d.md` pour la 3D). Le son se pose
+   avec les niveaux de base : `<Musique />` sans volume ; bruitages en volume relatif à la voix
+   (0,35 accent, 0,2 sous la voix, 0,12 détail). Pas plus de 3 fois le même fichier, et `<Suite />`
+   pour les étapes qui se suivent.
    Vérifier : `npx tsc` dans l'atelier.
 8. **Contrôles** (étape « Contrôles »). Planche d'images clés, une par moment fort :
    `node OUTILS/rendre.mjs <atelier> --temps 2,4.5,8.5,14,22,…` → `out/planche-…/planche.png`.
@@ -149,8 +162,10 @@ Noter chaque étape dans le journal **au moment où elle commence** : c'est ce q
    Avec une voix off, une image à `p(i) + 10` par phrase : le plan montre-t-il ce que dit la phrase ?
 9. **Rendu** (étape « Rendu »). `node OUTILS/rendre.mjs <atelier>` → `renders/film.mp4` (durée du
    rendu notée seule dans le journal). Contrôler le MP4 : durée, son, quelques images extraites.
-   Si ffmpeg est installé sur la machine, mesurer le volume (`ffmpeg -i film.mp4 -af ebur128 -f null -`,
-   viser −16 à −14 LUFS).
+   **Le son** : `rendre.mjs` affiche ensuite son contrôle (`outils/sonie.mjs`). Il donne la sonie
+   du film (viser −16 à −14 LUFS) et l'écart entre la voix et la musique (18 dB en médiane, 15 au
+   moins). Il signale aussi les moments où la voix est couverte. Corriger chaque ⚠ et refaire le
+   rendu **avant** de montrer le film : un son trop fort ne doit pas se découvrir après la livraison.
    **En doublage** (étape « Doublage »), ce premier rendu est sans voix. Lancer en arrière-plan
    `node OUTILS/doublage.mjs <atelier>` : le studio s'ouvre dans le navigateur. Dire à
    l'utilisateur ce qui l'attend : le film passe et son texte défile dessous ; chaque phrase est à
@@ -158,9 +173,12 @@ Noter chaque étape dans le journal **au moment où elle commence** : c'est ce q
    autant de prises qu'il veut ; puis « Garder cette prise » et « C'est bon, terminer ». L'outil
    s'arrête alors et donne l'écart de chaque phrase avec le prévu. Refaire planche et rendu : les
    plans se recalent sur sa vraie voix.
-10. **Livraison.** `node OUTILS/livrer.mjs <atelier> <racine du projet>` : range la vidéo, le
-   storyboard, la source, clôt le journal et écrit le bilan. Envoyer la vidéo à l'utilisateur
-   avec **le tableau du bilan dans la réponse**.
+10. **Livraison.** `node OUTILS/livrer.mjs <atelier> <racine du projet>` range la vidéo, le
+   storyboard et la source. Il écrit aussi **la recette** (`-recette.md` et sa planche
+   `-planche.png`) : style, DA, musique, voix, niveaux, bruitages et son mesuré, de quoi refaire un
+   film pareil avec `nouveau.mjs --recette`. Puis il clôt le journal et écrit le bilan. Envoyer la
+   vidéo à l'utilisateur avec **le tableau du bilan dans la réponse** et une ligne sur la recette
+   (où elle est, à quoi elle sert).
 
 Pour un simple réglage sur une vidéo existante : rouvrir son atelier (ou le recréer depuis
 `-source/`), corriger, refaire planche, rendu et livraison (nouvelle version). Pour **changer de
@@ -204,6 +222,9 @@ une minute de rendu (6 styles, 960 × 540).
   Adobe Fonts ou Typekit copiée (`references/da.md`).
 - Les sons appartiennent à l'utilisateur : n'utiliser que sa banque-son ou les fichiers qu'il
   donne, jamais une musique téléchargée sans droits. Rien de payant.
+- **Le son aux niveaux de base**, contrôlé après chaque rendu : la musique 18 dB sous la voix, et
+  des bruitages variés (pas plus de 3 fois le même), avec des suites qui montent pour les étapes
+  (`references/regles-communes.md`, « Le son »).
 - Remotion est gratuit pour une personne ou une entreprise de 3 salariés au plus. Un film fait
   dans le cadre d'une entreprise plus grande (celle où travaille l'utilisateur, pour ses clients)
   demande une licence entreprise Remotion : le rappeler avant le premier film de ce genre.

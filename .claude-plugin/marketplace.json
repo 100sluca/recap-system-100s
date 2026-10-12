@@ -9,7 +9,7 @@
       "name": "recap-system-100s",
       "source": "./plugin",
       "description": "Le mode récap d'un projet de code : 5 pièces tenues à jour, leur fraîcheur, un bandeau et un overlay",
-      "version": "1.1.2"
+      "version": "1.2.0"
     }
   ]
 }

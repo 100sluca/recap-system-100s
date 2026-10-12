@@ -24,6 +24,64 @@ la DA décide des couleurs et des polices. Ce qui suit vaut pour tous.
 - Un plan tenu doit encore vivre (caméra qui pousse, objet qui tourne, paquets qui circulent), sans
   bouger le texte qu'on lit.
 
+## Le son
+
+**Les niveaux se calculent, ils ne se règlent pas à l'oreille.** Le morceau et chaque bruitage
+sont mesurés à la création de l'atelier (`outils/sonie.mjs`), puis ramenés aux cibles de
+`NIVEAUX` (`src/reglages.ts`). Les morceaux de la banque-son vont de −10 à −20 LUFS, ses bruitages
+de −28 à −5 : un volume fixe donnait une musique 10 dB trop forte d'un film à l'autre. Gamaths v3
+(12/10/2026) avait la musique à 10 dB seulement sous la voix ; Luca l'a trouvée trop forte, mais
+seulement après le rendu.
+
+| Ce qui joue | Niveau de base |
+|---|---|
+| La voix off (`voix.mjs` la met à −17 LUFS en mono) | −14 LUFS dans le film |
+| La musique sous la voix | 18 dB sous la voix, −32 LUFS (réglage `musiqueSousVoix`) |
+| La musique entre les phrases (avant, après, silence de plus de 1,5 s) | −20 LUFS |
+| La musique d'un film sans voix off | −16 LUFS |
+| Un bruitage à `volume={1}` | −14 LUFS (aussi fort que la voix) |
+| Le film entier | −16 à −14 LUFS, crête sous −1 dB |
+
+- **`<Musique />` sans `volume`.** Ne le passer que si le contrôle d'après rendu le conseille
+  (0,7 ≈ −3 dB).
+- **Les volumes des bruitages sont relatifs à la voix**, quel que soit le fichier :
+  - 0,35 pour un accent net quand personne ne parle ;
+  - 0,2 sous la voix ;
+  - 0,12 pour un détail (touche, petite coche) ;
+  - 0,5 et plus seulement pour un impact sans voix.
+- **Le contrôle d'après rendu** (`rendre.mjs` le lance, `node OUTILS/sonie.mjs <atelier>` à la main).
+  Il mesure trois choses :
+  - la sonie du film ;
+  - l'écart entre la voix et ce qui joue dessous (il retire la voix du film pour mesurer la musique
+    et les bruitages seuls) ;
+  - les moments où la voix est couverte.
+  Corriger chaque alerte (⚠) avant de montrer le film à l'utilisateur.
+
+**Varier les bruitages.** Luca, 12/10/2026 : toujours les mêmes, trop souvent dans le même film,
+c'est abusif.
+
+- La palette est large (une quarantaine de sons rangés par famille : clic, pop, apparition, swoosh,
+  impact, montée, validation, notification, photo, note…). `nouveau.mjs` l'affiche, et
+  `public/son/sons.json` la garde.
+- **Un même fichier : 3 fois au plus par film**, hors suites (une suite compte pour une fois). Deux
+  événements de nature différente prennent deux sons différents.
+- Un bruitage souligne un événement qui compte : une apparition, une coupe, un vrai clic, une
+  validation. Il ne souligne pas chaque mouvement. Plus rares sous la voix : c'est elle qui parle.
+- Le storyboard tient une **carte des sons** (quel son pour quelle sorte d'événement) avant le code.
+
+**Les suites qui montent.** Quand plusieurs étapes se suivent de près (2 à 8 étapes en moins de
+10 s : des coches, des cartes qui se posent, les étapes d'un parcours) :
+
+- prendre **le même son, un cran plus haut à chaque étape**, avec `<Suite src aux={[…]} volume />`
+  de `Son.tsx` ;
+- jusqu'à 4 étapes, Suite monte sur l'arpège majeur (do mi sol do) ; au-delà, sur la gamme majeure ;
+- la hauteur change, pas la durée (`toneFrequency` de Remotion, vérifié à la mesure le 12/10/2026) ;
+- la progression doit se sentir et satisfaire : la dernière étape peut recevoir en plus un son de
+  validation.
+
+`<Effet ton={n}>` (en demi-tons, de −12 à +12) sert pour un son isolé qu'on veut plus aigu ou plus
+grave.
+
 ## La lecture
 
 - 1920 × 1080. Titres de 80 à 170 px, texte important ≥ 40 px, étiquettes ≥ 22 px. Marges de 110 px

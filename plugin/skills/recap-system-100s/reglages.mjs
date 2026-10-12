@@ -26,6 +26,7 @@ export const CLES = {
   ateliers: 'où créer les ateliers des vidéos (par défaut ~/recap-film)',
   envGemini: 'le fichier .env où coller ta clé Gemini, pour la voix off IA des vidéos (par défaut ~/.claude/recap-system-100s/.env, copié de .env.example ; le chemin, jamais la clé)',
   voix: 'la voix IA par défaut des vidéos, une voix Gemini (par défaut Achird ; ex. Charon, Sulafat, Kore)',
+  musiqueSousVoix: 'de combien de dB la musique passe sous la voix off dans les vidéos (par défaut 18 ; plus grand = musique plus discrète)',
 };
 
 const deplier = (v) => (typeof v === 'string' && /^~(?=$|[\\/])/.test(v) ? path.join(os.homedir(), v.slice(1)) : v);
@@ -82,7 +83,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   console.log(`Réglages : ${FICHIER}`);
   for (const [k, sens] of Object.entries(CLES)) {
     const v = k === 'envGemini' ? fichierEnvGemini() : r[k];
-    let etat = !v ? '(pas réglé)' : k === 'voix' || fs.existsSync(v) || (k === 'musique' && r.banqueSon && fs.existsSync(path.join(r.banqueSon, v))) ? v : `${v}  ← introuvable`;
+    let etat = !v ? '(pas réglé)' : k === 'voix' || k === 'musiqueSousVoix' || fs.existsSync(v) || (k === 'musique' && r.banqueSon && fs.existsSync(path.join(r.banqueSon, v))) ? v : `${v}  ← introuvable`;
     if (k === 'envGemini') etat = !fs.existsSync(v) ? `${v}  ← pas encore créé : /recap-system-100s -installer` : cleGemini() ? `${v}  (clé présente)` : `${v}  ← colle ta clé après GEMINI_API_KEY=`;
     console.log(`- ${k.padEnd(9)} ${etat}\n  ${sens}`);
   }

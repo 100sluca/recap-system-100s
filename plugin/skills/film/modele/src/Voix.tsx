@@ -36,9 +36,11 @@ const PLAGES = PHRASES.reduce<[number, number][]>((plages, _, i) => {
 }, []);
 
 /** Le facteur de volume de la musique à l'image f : `niveau` sous la voix, 1 ailleurs, avec des
- *  rampes de 0,4 s (la baisse commence avant la phrase). */
-export const sousVoix = (f: number, niveau = 0.3) => {
-	if (!VOIX) return 1;
+ *  rampes de 0,4 s (la baisse commence avant la phrase). Musique le passe d'après NIVEAUX
+ *  (reglages.ts) : 0,25, soit 12 dB plus bas. Le minutage prévu d'un doublage (PHRASES sans VOIX)
+ *  baisse déjà la musique : l'utilisateur s'enregistre sur le mix final. */
+export const sousVoix = (f: number, niveau = 0.25) => {
+	if (!PHRASES.length) return 1;
 	const rampe = Math.round(0.4 * FPS);
 	const parle = Math.max(
 		0,

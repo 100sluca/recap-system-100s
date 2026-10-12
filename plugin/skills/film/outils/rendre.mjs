@@ -9,6 +9,8 @@
 // Le film complet est rendu dans le dossier temporaire puis recopié : sous Windows, l'accès contrôlé
 // aux dossiers bloque le ffmpeg de Remotion sous Documents. La durée du rendu est notée dans
 // journal.jsonl. Rien d'autre à installer : Remotion apporte son Chrome et son ffmpeg.
+// Après le film, le contrôle du son (outils/sonie.mjs) : sa sonie, et l'écart entre la voix off et
+// la musique, à lire avant de montrer le film (noté aussi dans le journal, pour la recette).
 import {execFileSync, execSync} from 'node:child_process';
 import {appendFileSync, copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync} from 'node:fs';
 import {tmpdir} from 'node:os';
@@ -16,6 +18,7 @@ import {join} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {binaire, environnement} from './binaires.mjs';
 import {ecrirePng, lirePng, planche as assembler} from './png.mjs';
+import {controler, rapport} from './sonie.mjs';
 
 const atelier = process.argv[2];
 if (!atelier || !existsSync(join(atelier, 'package.json'))) throw new Error('Usage : node rendre.mjs <atelier> [--temps …|--images …]');
@@ -68,4 +71,11 @@ if (choix) {
 	);
 	appendFileSync(join(atelier, 'journal.jsonl'), JSON.stringify({rendu: secondes, images: nbImages, t: new Date().toISOString()}) + '\n');
 	console.log(`Film : ${join(atelier, 'renders', 'film.mp4')} (${nbImages} images, rendu en ${Math.round(secondes)} s)`);
+	try {
+		const son = controler(atelier);
+		appendFileSync(join(atelier, 'journal.jsonl'), JSON.stringify({sonie: son, t: new Date().toISOString()}) + '\n');
+		console.log(rapport(son));
+	} catch (e) {
+		console.warn(`Contrôle du son impossible : ${e.message.split('\n')[0]}`);
+	}
 }

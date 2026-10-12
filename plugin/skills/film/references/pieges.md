@@ -57,3 +57,13 @@
 - **Un texte placé par `right:` dans un conteneur sans largeur** (le « monde » d'un plan-séquence, un
   `div` en `position: absolute` sans taille) part hors champ ; et des boutons dans un `flex` sans
   largeur s'écrasent sur plusieurs lignes. Donner une largeur au conteneur, `whiteSpace: 'nowrap'`.
+- **Mesurer le son** : le ffmpeg de Remotion n'a pas `ebur128`. `outils/sonie.mjs` mesure en Node
+  (norme BS.1770). Une voix mono passe sur les deux canaux du film : elle y compte 3 dB de plus
+  que mesurée seule (−17 LUFS dans `voix.wav`, −14 dans le film).
+- **Monter le ton d'un bruitage** : `toneFrequency` de `@remotion/media` change la hauteur sans
+  changer la durée, en aperçu comme au rendu. Il accepte de 0,01 à 2, donc une octave au plus vers
+  le haut. `playbackRate` changerait la vitesse.
+- **Un volume au-dessus de 1** passe (Remotion ne borne qu'à 0). `Son.tsx` limite le gain d'une
+  musique faible à ×4 et celui d'un bruitage à ×8. La crête est contrôlée après le rendu.
+- **Contrôle du son sur une vieille vidéo** : si la voix a été refaite après le rendu, rien ne
+  s'annule quand `sonie.mjs` retire la voix du film. Il le dit au lieu de donner un faux écart.

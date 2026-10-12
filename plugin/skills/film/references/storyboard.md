@@ -33,7 +33,14 @@ réels : `exemples/100s-v2/STORYBOARD-v2.md` (style Monde en cubes) ; le film Ga
 - Texte : 3 lignes au plus par scène, avec les mots du projet ; chiffres réels.
 - Une scène de fin : le nom ou le logo, et une action (« Lire l'édition », « Essayer »…). Dans un
   duo, la signature selon l'équilibre choisi (`references/da.md`).
-- Noter les bruitages au moment où ils tombent (ceux que la fiche du style conseille).
+- Noter les bruitages au moment où ils tombent (ceux que la fiche du style conseille), et les
+  **suites** : les étapes qui se suivent de près prennent le même son, de plus en plus aigu
+  (`<Suite />`, `references/regles-communes.md`, « Le son »).
+- Sous le tableau, **la carte des sons** : une ligne par sorte d'événement et le son qui lui
+  revient, pris dans la palette de l'atelier (`public/son/sons.json`, par famille). Exemples :
+  « clic de l'interface → clic-bouton », « une carte se pose → pop, en suite », « résultat →
+  valide-objet ». Un même fichier ne sert pas plus de 3 fois dans le film (une suite compte pour
+  une), et deux événements différents ne partagent pas un son.
 
 ## Avant de passer au code
 

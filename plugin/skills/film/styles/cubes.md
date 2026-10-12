@@ -26,5 +26,6 @@ musique. L'aperçu : `src/styles/cubes/Apercu.tsx`.
 
 ## Le son
 
-100 à 110 temps/min ; `clic.wav` à chaque cube qui se pose en série, souffles sur les vols. Pas
+100 à 110 temps/min ; une suite qui monte (`<Suite />`) pour les cubes qui se posent en série,
+souffles sur les vols. Pas
 `musique-qui-bouge.mp3` : déjà utilisée par les films 100s.

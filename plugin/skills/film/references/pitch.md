@@ -161,15 +161,20 @@ alors retrouvées comme pour une voix IA.
   la phrase i, `pFin(i)` celle où elle finit. Le plan d'une phrase commence un peu avant elle
   (`p(i, -6)`) : l'image annonce, la voix confirme. La grille `t(n)` de la musique reste pour les
   petits mouvements.
-- **La musique passe dessous** : `<Musique />` (dans `Son.tsx`) joue aussi la voix et multiplie
-  son propre volume par `sousVoix(f)` : 30 % pendant qu'on parle, remontée en 0,4 s dans les
-  silences de plus de 1,5 s. Rien à ajouter au film. Une musique calme : c'est la voix qui mène.
+- **La musique passe dessous** : `<Musique />` (dans `Son.tsx`) joue aussi la voix et passe
+  18 dB sous elle pendant qu'on parle (−32 LUFS, réglage `musiqueSousVoix`). Elle remonte en 0,4 s
+  à −20 LUFS dans les silences de plus de 1,5 s. Quel que soit le morceau : sa sonie est mesurée,
+  puis ramenée à ces cibles (`references/regles-communes.md`, « Le son »). Rien à ajouter au film.
+  Une musique calme : c'est la voix qui mène. En doublage, le minutage prévu baisse déjà la
+  musique : l'utilisateur s'enregistre sur le mix final.
 - **Des sous-titres**, dans la DA du film : une vidéo sur un réseau se regarde souvent sans le son.
   `phraseA(f)` donne la phrase en cours.
 - **La durée** : `NB_TEMPS` couvre `DEBUT_VOIX` + `DUREE_VOIX` + la fin.
 - **Contrôles** : sur la planche, une image à `p(i) + 10` par phrase (le plan montre-t-il bien ce
-  que dit la phrase ?) ; au rendu, viser −16 à −14 LUFS et une voix nettement au-dessus de la
-  musique. Testé le 12/10/2026 : −14,9 LUFS en voix IA, −14,1 en doublage.
+  que dit la phrase ?). Au rendu, `rendre.mjs` mesure le son : viser −16 à −14 LUFS, et un écart
+  de 18 dB en médiane entre la voix et la musique (jamais moins de 15 dB). Mesuré le 12/10/2026 :
+  Gamaths v3 à 10 dB (musique jugée trop forte), recap-system-100s v1 à 15,6 dB, et le film d'essai
+  des niveaux de base à 17,9 dB, avec le morceau le plus fort de la banque.
 - **Transparence** : pour une voix IA, l'indiquer dans la description de la vidéo (« voix off
   générée par IA »), et toujours pour une voix clonée.
 - **Livraison** : `livrer.mjs` range le pitch avec la vidéo (`<projet>-vN-pitch.md`) et garde

@@ -55,6 +55,11 @@ const donnees = lire();
 if (commande === 'noter') {
 	const [, projet, version, morceau] = args;
 	if (!projet || !morceau) throw new Error('Usage : node musique.mjs noter <projet> <version> <morceau>');
+	// Les ateliers d'essai ne comptent pas (même règle qu'à la lecture des ateliers, plus haut).
+	if (/(^|-)(dev|test|essai)(-|$)/.test(projet)) {
+		console.log(`Pas noté (atelier d'essai) : ${projet} v${version}`);
+		process.exit(0);
+	}
 	donnees.films = donnees.films.filter((x) => !(x.projet === projet && String(x.version) === String(version)));
 	donnees.films.push({projet, version: Number(version) || version, morceau: basename(morceau), date: new Date().toISOString().slice(0, 10)});
 	ecrire(donnees);

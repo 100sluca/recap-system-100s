@@ -32,7 +32,7 @@ style des « messages qui s'envoient », en plus fluide.
 
 ## Le son
 
-Touches de clavier pendant la frappe, « whoosh » d'envoi, petits rebonds pendant « je prépare »,
+Touches de clavier pendant la frappe, « whoosh » d'envoi, petits rebonds qui montent pendant « je prépare »,
 impact plein sur l'inondation, clic du bouton, son de validation. Musique 120 à 130 temps/min, un
 événement par temps.
 

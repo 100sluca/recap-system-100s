@@ -32,7 +32,8 @@ les derniers mots s'allument dans l'accent ; puis le résultat chiffré ; puis l
 
 ## Le son
 
-Clics de touches pendant la frappe, un « tick » par coche, un souffle léger aux changements d'étape.
+Clics de touches pendant la frappe, des coches qui montent d'un cran à chacune (`<Suite />`), un
+souffle léger aux changements d'étape.
 Musique posée, 100 à 120 temps/min.
 
 ## Le code
