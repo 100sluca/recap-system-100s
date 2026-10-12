@@ -116,7 +116,9 @@ Noter chaque étape dans le journal **au moment où elle commence** : c'est ce q
    marche, la preuve, la fin ; une phrase par ligne, une phrase = un plan. Le montrer en entier avec
    sa durée estimée et **attendre sa validation** (la seule étape qui attend : la voix porte le film).
    - voix IA : `node OUTILS/voix.mjs ia <atelier>` (`--voix <nom>` pour une autre ;
-     `node OUTILS/voix.mjs echantillons <atelier>` pour en comparer quatre) ;
+     `node OUTILS/voix.mjs echantillons <atelier>` pour en comparer quatre). La clé Gemini est lue
+     dans `~/.claude/recap-system-100s/.env` (modèle `.env.example`) ; sans clé, l'outil crée ce
+     fichier et donne son chemin : l'utilisateur y colle sa clé, jamais dans la conversation ;
    - doublage : `node OUTILS/voix.mjs prevoir <atelier>` (le minutage prévu, à 2,6 mots par
      seconde) ; le film se fait sur ce minutage, l'utilisateur s'enregistre après le premier rendu
      (étape 9).

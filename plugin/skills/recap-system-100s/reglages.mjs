@@ -6,7 +6,7 @@
 //   node reglages.mjs <clé> <valeur>     en change un ; une valeur vide ("") le retire
 //
 // Le même dossier garde aussi les présences des sessions (presence/), les réglages de l'overlay
-// (overlay.json) et le moteur des schémas (archify/).
+// (overlay.json), le moteur des schémas (archify/) et le .env de la clé Gemini (copié de .env.example).
 
 import fs from 'node:fs';
 import os from 'node:os';
@@ -15,13 +15,16 @@ import { fileURLToPath } from 'node:url';
 
 export const DOSSIER = path.join(os.homedir(), '.claude', 'recap-system-100s');
 export const FICHIER = path.join(DOSSIER, 'reglages.json');
+/** Le .env de la clé Gemini par défaut, copié du modèle .env.example livré à côté de ce script. */
+export const ENV_GEMINI = path.join(DOSSIER, '.env');
+const MODELE_ENV = path.join(path.dirname(fileURLToPath(import.meta.url)), '.env.example');
 
 export const CLES = {
   fiches: "un dossier où recopier aussi la fiche et le lanceur de chaque projet, pour les lancer d'un double-clic (ex. ~/Desktop/Projets_Code-start)",
   banqueSon: 'ta banque de sons pour les vidéos : un dossier avec musique/ et, si tu veux, sound-effects/ et bruitages.json',
   musique: "une musique à suggérer (jamais imposée : le skill film varie la musique d'un film à l'autre, outils/musique.mjs)",
   ateliers: 'où créer les ateliers des vidéos (par défaut ~/recap-film)',
-  envGemini: 'pour la voix off IA des vidéos : un fichier .env qui contient GEMINI_API_KEY (le chemin du fichier, jamais la clé)',
+  envGemini: 'le fichier .env où coller ta clé Gemini, pour la voix off IA des vidéos (par défaut ~/.claude/recap-system-100s/.env, copié de .env.example ; le chemin, jamais la clé)',
   voix: 'la voix IA par défaut des vidéos, une voix Gemini (par défaut Achird ; ex. Charon, Sulafat, Kore)',
 };
 
@@ -34,6 +37,27 @@ export function lireReglages() {
   } catch {
     return {};
   }
+}
+
+/** Le fichier .env de la clé Gemini : le réglage envGemini, sinon ~/.claude/recap-system-100s/.env. */
+export const fichierEnvGemini = () => lireReglages().envGemini || ENV_GEMINI;
+
+/** La clé Gemini écrite dans ce fichier (GEMINI_API_KEY=…), ou null. Jamais affichée. */
+export function cleGemini() {
+  const f = fichierEnvGemini();
+  if (!fs.existsSync(f)) return null;
+  const m = fs.readFileSync(f, 'utf8').match(/^[ \t]*(?:GEMINI_API_KEY|GOOGLE_API_KEY)[ \t]*=[ \t]*["']?([^"'\r\n#]*)/m);
+  return m?.[1].trim() || null;
+}
+
+/** Crée le .env de la clé depuis le modèle s'il n'existe pas encore ; rend son chemin. */
+export function preparerEnvGemini() {
+  const f = fichierEnvGemini();
+  if (!fs.existsSync(f) && fs.existsSync(MODELE_ENV)) {
+    fs.mkdirSync(path.dirname(f), { recursive: true });
+    fs.copyFileSync(MODELE_ENV, f);
+  }
+  return f;
 }
 
 function ecrire(cle, valeur) {
@@ -57,8 +81,9 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   const r = lireReglages();
   console.log(`Réglages : ${FICHIER}`);
   for (const [k, sens] of Object.entries(CLES)) {
-    const v = r[k];
-    const etat = !v ? '(pas réglé)' : k === 'voix' || fs.existsSync(v) || (k === 'musique' && r.banqueSon && fs.existsSync(path.join(r.banqueSon, v))) ? v : `${v}  ← introuvable`;
+    const v = k === 'envGemini' ? fichierEnvGemini() : r[k];
+    let etat = !v ? '(pas réglé)' : k === 'voix' || fs.existsSync(v) || (k === 'musique' && r.banqueSon && fs.existsSync(path.join(r.banqueSon, v))) ? v : `${v}  ← introuvable`;
+    if (k === 'envGemini') etat = !fs.existsSync(v) ? `${v}  ← pas encore créé : /recap-system-100s -installer` : cleGemini() ? `${v}  (clé présente)` : `${v}  ← colle ta clé après GEMINI_API_KEY=`;
     console.log(`- ${k.padEnd(9)} ${etat}\n  ${sens}`);
   }
 }

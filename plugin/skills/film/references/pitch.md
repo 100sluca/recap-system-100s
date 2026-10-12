@@ -102,9 +102,14 @@ moins de 20 s.
    d'un enregistrement de la personne avec son accord enregistré (voice replication). Son
    identifiant `voice_…` se passe à `--voix`.
 
-La clé : `GEMINI_API_KEY` dans l'environnement, ou le réglage `envGemini` (le chemin d'un fichier
-`.env` qui la contient). Clé gratuite : https://aistudio.google.com/apikey. Une clé à part pour les
-films évite de partager le quota d'un autre usage. **Le palier gratuit autorise Google à se servir
+La clé : la ligne `GEMINI_API_KEY=` de `~/.claude/recap-system-100s/.env`, copié du modèle
+`.env.example` (skill `recap-system-100s`) par `-installer`, ou par `voix.mjs` au premier besoin ;
+le réglage `envGemini` désigne un autre fichier si l'utilisateur préfère. Sans clé, `voix.mjs`
+s'arrête en donnant le chemin du fichier : le dire à l'utilisateur, qui y colle sa clé lui-même.
+Ne jamais lui demander la clé dans la conversation (elle resterait dans le journal) ; s'il la
+donne quand même, ne l'écrire nulle part et lui conseiller de la régénérer. Clé gratuite :
+https://aistudio.google.com/apikey. Une clé à part pour les films évite de partager le quota d'un
+autre usage. **Le palier gratuit autorise Google à se servir
 des textes envoyés** : pour un pitch confidentiel (client, projet non annoncé), passer par le
 palier payant (quelques centimes la minute de voix) ou par la voix de l'utilisateur.
 

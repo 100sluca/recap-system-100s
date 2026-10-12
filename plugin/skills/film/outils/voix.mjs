@@ -14,8 +14,9 @@
 //
 // La voix IA : Gemini TTS (gemini-3.8-flash-tts, gratuit dans la limite du palier gratuit de
 // l'API Gemini, plus de 130 langues dont le français). Voix par défaut : le réglage « voix »,
-// sinon Achird. La clé : GEMINI_API_KEY ou GOOGLE_API_KEY dans l'environnement, sinon le fichier
-// .env nommé par le réglage « envGemini ». Elle n'est jamais affichée ni écrite ailleurs.
+// sinon Achird. La clé : GEMINI_API_KEY= dans ~/.claude/recap-system-100s/.env (copié du modèle
+// .env.example par -installer, ou ici au premier besoin), ou dans le fichier du réglage « envGemini ».
+// Elle n'est jamais affichée ni écrite ailleurs.
 //
 // Le minutage :
 // - voix IA en un seul appel : les fins de phrase sont cherchées dans les silences, là où les place
@@ -26,7 +27,7 @@
 import {execFileSync} from 'node:child_process';
 import {existsSync, mkdirSync, readFileSync, rmSync, writeFileSync} from 'node:fs';
 import {join} from 'node:path';
-import {lireReglages} from '../../recap-system-100s/reglages.mjs';
+import {cleGemini, lireReglages, preparerEnvGemini} from '../../recap-system-100s/reglages.mjs';
 import {binaire, environnement} from './binaires.mjs';
 
 const [mode, atelier, fichierAudio] = process.argv.slice(2);
@@ -65,15 +66,13 @@ function lirePitch() {
 
 // ---------- Gemini TTS
 function cle() {
-	if (process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY) return process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
-	const env = lireReglages().envGemini;
-	if (env && existsSync(env)) {
-		const m = readFileSync(env, 'utf8').match(/^\s*(?:GEMINI_API_KEY|GOOGLE_API_KEY)\s*=\s*["']?([^"'\r\n]+)/m);
-		if (m) return m[1].trim();
-	}
+	const trouvee = cleGemini();
+	if (trouvee) return trouvee;
+	// Pas encore de clé : le fichier est créé depuis le modèle .env.example, prêt à la recevoir.
+	const fichier = preparerEnvGemini();
 	throw new Error(
-		"Pas de clé Gemini : mettre GEMINI_API_KEY dans l'environnement, ou régler « envGemini » sur un fichier .env qui la contient " +
-			'(node ../../recap-system-100s/reglages.mjs envGemini "<fichier .env>"). Une clé gratuite : https://aistudio.google.com/apikey',
+		`Pas de clé Gemini pour la voix IA. Colle ta clé après « GEMINI_API_KEY= » dans ${fichier}, puis relance. ` +
+			'Une clé gratuite : https://aistudio.google.com/apikey',
 	);
 }
 
@@ -294,6 +293,18 @@ function ecrireSorties(pcm, freq, minutage, source, debutVoix = DEBUT) {
 	console.log(`Film : au moins ${(debutVoix + duree + 2).toFixed(1)} s (voix + ${debutVoix} s avant + 2 s pour la fin).`);
 }
 
+/** La voix IA ramenée au niveau d'un enregistrement (−17 LUFS) : Gemini la rend vers −21 LUFS, et le
+ *  film tombait alors sous −18 LUFS (mesuré le 12/10/2026). La durée ne change pas, le minutage non plus. */
+function normaliser(pcm, freq) {
+	mkdirSync(dossierVoix, {recursive: true});
+	const brute = join(dossierVoix, 'ia-brute.wav');
+	ecrireWav(brute, pcm, freq);
+	const sortie = convertir(brute, join(dossierVoix, 'ia.wav'));
+	rmSync(brute, {force: true});
+	rmSync(join(dossierVoix, 'ia.wav'), {force: true});
+	return sortie;
+}
+
 /** Un fichier audio en WAV mono 48 kHz (ffmpeg de Remotion), ramené à −17 LUFS (avec la musique
  *  dessous, le film tombe vers −14), dont on retire les `decalage` premières secondes. */
 function convertir(fichier, sortie, decalage = 0) {
@@ -337,10 +348,12 @@ if (mode === 'echantillons') {
 			morceaux.push(lu.pcm);
 			t += lu.pcm.length / 2 / freq;
 		}
-		ecrireSorties(Buffer.concat(morceaux), freq, minutage, `Gemini ${MODELE}, voix ${voix}, phrase par phrase`);
+		const n = normaliser(Buffer.concat(morceaux), freq);
+		ecrireSorties(n.pcm, n.freq, minutage, `Gemini ${MODELE}, voix ${voix}, phrase par phrase`);
 	} else {
 		const {pcm, freq} = await lire(phrases.map((p) => p.texte).join('\n'), voix);
-		ecrireSorties(pcm, freq, minuter(pcm, freq, phrases), `Gemini ${MODELE}, voix ${voix}`);
+		const n = normaliser(pcm, freq);
+		ecrireSorties(n.pcm, n.freq, minuter(pcm, freq, phrases), `Gemini ${MODELE}, voix ${voix}`);
 	}
 } else if (mode === 'prevoir') {
 	// Le minutage d'une lecture posée : le débit (mots par seconde), une pause entre les phrases,

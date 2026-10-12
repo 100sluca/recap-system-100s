@@ -3,7 +3,8 @@
 // demander. Lancé par /recap-system-100s -installer.
 //
 //   node prerequis.mjs              le bilan, avec la commande d'installation de chaque manque
-//   node prerequis.mjs --preparer   et prépare : dossier des réglages, moteur des schémas (Archify)
+//   node prerequis.mjs --preparer   et prépare : dossier des réglages, moteur des schémas (Archify),
+//                                   et le .env de la clé Gemini (copié du modèle .env.example)
 //
 // Code de sortie 0 : tout l'indispensable est là. 1 : il manque quelque chose d'indispensable.
 
@@ -12,7 +13,7 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { trouverNavigateur } from './navigateur.mjs';
-import { DOSSIER, FICHIER, lireReglages } from './reglages.mjs';
+import { DOSSIER, FICHIER, cleGemini, fichierEnvGemini, lireReglages, preparerEnvGemini } from './reglages.mjs';
 
 const ICI = path.dirname(fileURLToPath(import.meta.url));
 const preparer = process.argv.includes('--preparer');
@@ -70,6 +71,7 @@ const archify = path.join(DOSSIER, 'archify', 'archify', 'bin', 'archify.mjs');
 if (preparer) {
   fs.mkdirSync(path.join(DOSSIER, 'presence'), { recursive: true });
   if (!fs.existsSync(FICHIER)) fs.writeFileSync(FICHIER, '{}\n', 'utf8');
+  preparerEnvGemini();
   if (!fs.existsSync(archify) && git) {
     const r = spawnSync(process.execPath, [path.join(ICI, '..', 'carte', 'carte.mjs'), 'installer'], { encoding: 'utf8' });
     if (r.status !== 0) console.error((r.stdout || '') + (r.stderr || ''));
@@ -81,6 +83,11 @@ noter('Moteur des schémas (Archify)', fs.existsSync(archify), fs.existsSync(arc
 const reg = lireReglages();
 noter('Banque de sons (réglage banqueSon)', Boolean(reg.banqueSon && fs.existsSync(reg.banqueSon)), reg.banqueSon || 'pas réglée : chaque vidéo demandera sa musique',
   'la musique et les bruitages des vidéos (facultatif)', {});
+
+const envGemini = fichierEnvGemini();
+noter('Clé Gemini (voix off IA)', Boolean(cleGemini()),
+  cleGemini() ? `présente dans ${envGemini}` : fs.existsSync(envGemini) ? `à coller après GEMINI_API_KEY= dans ${envGemini}` : 'pas encore de fichier : /recap-system-100s -installer',
+  'la voix off IA des vidéos (facultatif) ; clé gratuite : https://aistudio.google.com/apikey', {});
 
 console.log(`recap-system-100s · prérequis sur ${OS}\n`);
 for (const l of lignes) {

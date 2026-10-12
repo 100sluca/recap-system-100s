@@ -102,7 +102,7 @@ mon-projet/
 | `banqueSon` | ta banque de sons pour les vidéos : un dossier avec `musique/` et, pour les bruitages, un `bruitages.json` |
 | `musique` | la musique par défaut des vidéos |
 | `ateliers` | où créer les ateliers des vidéos (par défaut `~/recap-film`) |
-| `envGemini` | pour la voix off IA : le chemin d'un fichier `.env` qui contient `GEMINI_API_KEY` (jamais la clé elle-même) |
+| `envGemini` | pour la voix off IA : le fichier `.env` où est ta clé Gemini (par défaut `~/.claude/recap-system-100s/.env` ; le chemin, jamais la clé) |
 | `voix` | la voix IA par défaut (Achird ; ou Charon, Sulafat, Kore…) |
 
 **Aucune musique n'est livrée** : chacun utilise la sienne. Sans banque-son, Claude te demande un
@@ -114,6 +114,13 @@ gratuite avec une [clé Gemini](https://aistudio.google.com/apikey). Sur le pali
 se servir des textes envoyés. Pour un projet confidentiel, choisis le **doublage** : une page locale
 passe le film avec ton texte qui défile dessous, enregistre ta voix en même temps, puis le film se
 recale sur elle. Rien ne sort de ta machine.
+
+**Ta clé Gemini, pour la voix IA** : `/recap-system-100s -installer` crée
+`~/.claude/recap-system-100s/.env`, une copie du modèle
+[`.env.example`](plugin/skills/recap-system-100s/.env.example). Ouvre ce fichier et colle ta clé
+après `GEMINI_API_KEY=`. C'est tout : chaque vidéo avec voix IA la lit là. Pour garder ta clé
+ailleurs, règle `envGemini` sur ton propre fichier `.env`. Ne la colle jamais dans le chat ni dans
+un projet.
 
 ## Mettre à jour, retirer
 

@@ -135,11 +135,14 @@ projets masqués, quitter. Elle lit les présences que le bandeau de chaque sess
 **-installer.** Pour une première installation, ou quand quelque chose ne marche pas :
 1. `node "${CLAUDE_SKILL_DIR}/prerequis.mjs" --preparer` : vérifie Node, git, un navigateur
    Chromium, npm et (hors Windows) Python avec tkinter ; crée le dossier des réglages ; télécharge
-   le moteur des schémas (Archify, quelques Mo, avec git).
+   le moteur des schémas (Archify, quelques Mo, avec git) ; copie le modèle `.env.example` en
+   `~/.claude/recap-system-100s/.env`, le fichier de la clé Gemini.
 2. Pour chaque manque, proposer la commande d'installation qu'il affiche et la lancer seulement
    avec l'accord de l'utilisateur.
 3. Proposer les réglages utiles (`-reglages`) : un dossier des fiches pour le double-clic, une
-   banque de sons pour les vidéos. Aucun n'est obligatoire.
+   banque de sons pour les vidéos. Aucun n'est obligatoire. Pour la voix off IA des vidéos :
+   l'utilisateur colle lui-même sa clé Gemini après `GEMINI_API_KEY=` dans ce `.env` (donner le
+   chemin, ne jamais demander la clé dans la conversation).
 
 **-reglages.** `node "${CLAUDE_SKILL_DIR}/reglages.mjs"` montre les réglages ;
 `node "${CLAUDE_SKILL_DIR}/reglages.mjs" <clé> "<valeur>"` en change un (valeur vide : le retire).
