@@ -3,6 +3,10 @@
 banque-son/
 # Les notes d'essais et de recherche de l'auteur.
 notes/
+# Le récap de l'auteur sur son propre plugin (vidéo, schémas, fiches) : gardé sur sa machine.
+# Commité, il alourdirait de ~24 Mo chaque installation (la marketplace clone tout le dépôt).
+__recap-system-100s/
+CLAUDE.md
 
 # Téléchargé au premier usage, hors du dépôt (~/.claude/recap-system-100s/archify).
 plugin/skills/carte/moteur/
