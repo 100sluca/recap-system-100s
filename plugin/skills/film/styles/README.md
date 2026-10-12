@@ -47,7 +47,7 @@ il se joue dans **la DA du projet ou du client**, qu'il réinterprète à sa fa�
 | 3 | [Fil conducteur](fil.md) | un seul point traverse tout, rebondit, inonde, des mots tournent en 3D | une marque, une idée, un système | le point orange, la balle blanche |
 | 4 | [Teaser](teaser.md) | bande-annonce : noir, faisceaux, signe qui s'embrase, mur de cartes | une annonce, une sortie | le teaser de feuille de route |
 | 5 | [Plan-séquence](sequence.md) | un seul plan : zoom sur la saisie, recul au téléphone, inondation, résultat | une app, un parcours de bout en bout | Food craving, CloudJoi |
-| 6 | [Court-métrage 3D](court-metrage.md) | une vraie scène 3D et une petite histoire (en option, sans aperçu) | un récit, une ambiance | le premier tram du matin |
+| 6 | [Court-métrage 3D](court-metrage.md) | une vraie scène 3D et une petite histoire : la rue à l'heure bleue, le produit sur un écran, le jour qui se lève (en option, plus long à écrire) | un récit, une ambiance | le premier tram du matin |
 | 7 | [Monde en cubes](cubes.md) | l'essaim de cubes des films 100s (masqué : seulement sur demande) | les films de 100s | exemples/100s-v2 |
 
 Les aperçus livrés (même contenu, chaque style dans sa palette, avec le flou de mouvement) :
@@ -64,8 +64,10 @@ Les aperçus livrés (même contenu, chaque style dans sa palette, avec le flou 
    essai). L'utilisateur voit **son** projet dans chaque style. Sans le temps : les aperçus livrés.
 3. Montrer : ouvrir `catalogue.html` (Windows : `start "" "<chemin>"`, macOS : `open`), ou envoyer
    `catalogue.mp4` si l'outil d'envoi de fichiers existe. Puis demander par une question à choix les
-   **trois ou quatre styles qui conviennent le mieux**, le premier « (Recommandé) » avec sa raison en
-   une ligne. Le court-métrage 3D s'annonce comme une option longue ; le Monde en cubes, jamais d'office.
+   **trois styles qui conviennent le mieux**, le premier « (Recommandé) » avec sa raison en une
+   ligne, et **le court-métrage 3D toujours en quatrième option** (« une petite histoire en 3D, plus
+   longue à écrire »), sauf si l'utilisateur l'a écarté. Le Monde en cubes, jamais d'office.
+   L'utilisateur peut aussi répondre par un numéro du catalogue (« Autre »).
 
 ## Mélanger
 

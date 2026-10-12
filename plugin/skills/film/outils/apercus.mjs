@@ -64,10 +64,10 @@ for (const s of styles) {
 	});
 	copyFileSync(temporaire, join(sortie, `${s.id}.mp4`));
 	rmSync(temporaire);
-	// La vignette : une image du milieu de l'aperçu, montrée avant la lecture.
+	// La vignette : une image de l'aperçu (à 42 %, ou à `vignette` du catalogue), montrée avant la lecture.
 	const ffmpegV = binaire(atelier, 'ffmpeg');
 	const tempJpg = join(tmpdir(), `apercu-${s.id}-${Date.now()}.jpg`);
-	execFileSync(ffmpegV, ['-y', '-v', 'error', '-ss', String(((s.duree || 270) / 30) * 0.42), '-i', join(sortie, `${s.id}.mp4`), '-frames:v', '1', '-q:v', '4', tempJpg], {env: environnement(ffmpegV)});
+	execFileSync(ffmpegV, ['-y', '-v', 'error', '-ss', String(((s.duree || 270) / 30) * (s.vignette ?? 0.42)), '-i', join(sortie, `${s.id}.mp4`), '-frames:v', '1', '-q:v', '4', tempJpg], {env: environnement(ffmpegV)});
 	copyFileSync(tempJpg, join(sortie, `${s.id}.jpg`));
 	rmSync(tempJpg);
 	const mo = statSync(join(sortie, `${s.id}.mp4`)).size / 1e6;
@@ -90,7 +90,7 @@ const cartes = faits
 	.map(
 		(s) => `    <article>
       <video src="${s.id}.mp4" poster="${s.id}.jpg" autoplay muted loop playsinline></video>
-      <h2><span>${s.numero}</span> ${echap(s.nom)}</h2>
+      <h2><span>${s.numero}</span> ${echap(s.nom)}${s.option ? ' <em>en option · plus long à écrire</em>' : ''}</h2>
       <p>${echap(s.accroche)}</p>
       <dl><dt>Pour</dt><dd>${echap(s.pour)}</dd><dt>Rendu</dt><dd>${echap(s.dimension)}</dd><dt>Musique</dt><dd>${echap(s.tempo)}</dd></dl>
     </article>`,
@@ -129,6 +129,7 @@ writeFileSync(
   video { display: block; width: 100%; aspect-ratio: 16 / 9; background: #000; }
   h2 { font-size: 19px; margin: 14px 16px 4px; }
   h2 span { display: inline-block; min-width: 26px; color: var(--doux); font-variant-numeric: tabular-nums; }
+  h2 em { font-style: normal; font-weight: 500; font-size: 13px; color: var(--doux); border: 1px solid var(--filet); border-radius: 999px; padding: 2px 9px; margin-left: 6px; vertical-align: 2px; white-space: nowrap; }
   p { margin: 0 16px 10px; }
   dl { display: grid; grid-template-columns: auto 1fr; gap: 2px 12px; margin: 0 16px 16px; font-size: 14px; }
   dt { color: var(--doux); }

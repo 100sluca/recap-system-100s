@@ -17,6 +17,7 @@
   video { display: block; width: 100%; aspect-ratio: 16 / 9; background: #000; }
   h2 { font-size: 19px; margin: 14px 16px 4px; }
   h2 span { display: inline-block; min-width: 26px; color: var(--doux); font-variant-numeric: tabular-nums; }
+  h2 em { font-style: normal; font-weight: 500; font-size: 13px; color: var(--doux); border: 1px solid var(--filet); border-radius: 999px; padding: 2px 9px; margin-left: 6px; vertical-align: 2px; white-space: nowrap; }
   p { margin: 0 16px 10px; }
   dl { display: grid; grid-template-columns: auto 1fr; gap: 2px 12px; margin: 0 16px 16px; font-size: 14px; }
   dt { color: var(--doux); }
@@ -59,12 +60,13 @@
       <p>Un seul plan, sans coupe : très près d'un champ de saisie qui s'écrit, recul jusqu'au téléphone, la demande part, une couleur inonde l'écran et devient le résultat ; puis de grandes phrases sur le blanc.</p>
       <dl><dt>Pour</dt><dd>une app, un assistant, une commande, un parcours d'utilisateur de bout en bout</dd><dt>Rendu</dt><dd>2D, un plan continu, flou de mouvement</dd><dt>Musique</dt><dd>120 à 130 temps/min, un événement par temps</dd></dl>
     </article>
-    <article class="option">
-      <div class="vide">En option · pas d'aperçu</div>
-      <h2><span>6</span> Court-métrage 3D</h2>
-      <p>Une vraie scène 3D écrite en code (Three.js) : une ville, un lieu, des personnages simples, une lumière qui change ; une petite histoire plutôt qu'une démo.</p>
-      <dl><dt>Pour</dt><dd>en option : un récit, une ambiance, un projet qu'on raconte par une histoire</dd><dt>Rendu</dt><dd>3D (Three.js), long à faire et à rendre</dd></dl>
+    <article>
+      <video src="court-metrage.mp4" poster="court-metrage.jpg" autoplay muted loop playsinline></video>
+      <h2><span>6</span> Court-métrage 3D <em>en option · plus long à écrire</em></h2>
+      <p>Une vraie scène 3D écrite en code : une rue à l'heure bleue, quelqu'un qui se sert du produit, le jour qui se lève, un tram, l'enseigne du projet qui s'allume. Une petite histoire plutôt qu'une démo.</p>
+      <dl><dt>Pour</dt><dd>un récit, une ambiance, un projet qu'on raconte par une histoire (en option : plus long à faire et à rendre)</dd><dt>Rendu</dt><dd>3D (Three.js), lumière qui change, sans flou de mouvement</dd><dt>Musique</dt><dd>70 à 100 temps/min, posé</dd></dl>
     </article>
+
   </div>
 </main>
 </body>

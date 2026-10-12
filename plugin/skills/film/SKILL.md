@@ -105,12 +105,13 @@ Noter chaque étape dans le journal **au moment où elle commence** : c'est ce q
 3. **Le style** (étape « Style »). Si l'utilisateur ne l'a pas dit : écrire `<atelier>/apercus.json`
    (le vrai contenu du projet : nom, phrase, accroche, une demande qu'on fait au produit et sa
    réponse, un chiffre, trois mots-clés, l'adresse), rendre `node OUTILS/apercus.mjs <atelier>`
-   (une à deux minutes, flou de mouvement compris : les cinq styles dans la DA du projet), ouvrir
+   (une à deux minutes, flou de mouvement compris : les six styles dans la DA du projet, court-métrage compris), ouvrir
    `out/apercus/catalogue.html` (ou envoyer `catalogue.mp4`), puis demander le style par une
-   question à choix : les 3 ou 4 styles qui conviennent le mieux (keynote, démo produit, fil
-   conducteur, teaser, plan-séquence), le premier « (Recommandé) » avec sa raison en une ligne. Le
-   court-métrage 3D s'annonce comme une option longue ; le « Monde en cubes » seulement s'il est
-   demandé. Puis lire la fiche du style (`styles/<id>.md`) et `styles/README.md` (ce que Luca aime).
+   question à choix : les 3 styles qui conviennent le mieux (keynote, démo produit, fil
+   conducteur, teaser, plan-séquence), le premier « (Recommandé) » avec sa raison en une ligne, et
+   **le court-métrage 3D toujours en quatrième option** (une petite histoire en 3D : la rue à
+   l'heure bleue, le produit sur un écran, le jour qui se lève ; plus longue à écrire, le rendu
+   reste rapide). Le « Monde en cubes » seulement s'il est demandé. Puis lire la fiche du style (`styles/<id>.md`) et `styles/README.md` (ce que Luca aime).
    **La musique, différente à chaque film** : `node OUTILS/musique.mjs choisir --style <id> --atelier <atelier>`
    classe les morceaux de la banque-son (tempo qui va avec le style, ceux des derniers films écartés,
    l'historique est dans `~/.claude/recap-system-100s/musiques.json`) et en tire trois au sort parmi

@@ -17,7 +17,9 @@ export type StyleCatalogue = {
 	tempo: string;
 	references?: string;
 	duree: number; // durée de l'aperçu, en images (30 par seconde)
-	apercu?: boolean; // false : pas d'aperçu (style en option)
+	apercu?: boolean; // false : pas d'aperçu
+	option?: boolean; // true : proposé à part, plus long à faire et à rendre (court-métrage 3D)
+	vignette?: number; // où prendre la vignette du catalogue, en part de l'aperçu (0,42 par défaut)
 	masque?: boolean; // true : jamais proposé d'office
 	da: DA;
 };
@@ -125,6 +127,9 @@ export const adapterDA = (id: string, da: DA): DA => {
 		case 'fil':
 			// Le point est l'accent : la marque telle quelle.
 			return avec({});
+		case 'court-metrage':
+			// L'heure bleue : l'encre de la marque tirée vers un bleu de nuit ; ses lumières à l'accent.
+			return avec(versSombre(mix(claire ? sombre : c.fond, '#141c33', 0.55)));
 		default:
 			return da;
 	}

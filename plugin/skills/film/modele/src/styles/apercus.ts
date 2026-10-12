@@ -1,5 +1,6 @@
 import type React from 'react';
 import type {ApercuProps} from './commun';
+import {ApercuCourtMetrage} from './court-metrage/Apercu';
 import {ApercuCubes} from './cubes/Apercu';
 import {ApercuDemo} from './demo/Apercu';
 import {ApercuFil} from './fil/Apercu';
@@ -15,5 +16,6 @@ export const APERCUS: Record<string, React.FC<ApercuProps>> = {
 	fil: ApercuFil,
 	teaser: ApercuTeaser,
 	sequence: ApercuSequence,
+	'court-metrage': ApercuCourtMetrage,
 	cubes: ApercuCubes,
 };
