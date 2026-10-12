@@ -10,7 +10,7 @@ rien avoir à se rappeler. Claude le remplit et le tient à jour pendant que tu 
 | 2 | Ressources | `RESSOURCES.md` : comptes, services, variables, clés (les noms, jamais les valeurs) |
 | 3 | Fabrication | `FABRICATION.md` : la stack, les décisions et leurs raisons, les inspirations et leurs licences |
 | 4 | Archi | des schémas interactifs (fonctionnement, architecture, détail), dessinés avec [Archify](https://github.com/tt-a1i/archify) |
-| 5 | Vidéo | une vidéo de présentation en motion design 2D/3D, faite avec [Remotion](https://www.remotion.dev) |
+| 5 | Vidéo | une vidéo de présentation en motion design 2D/3D, faite avec [Remotion](https://www.remotion.dev), dans la DA du projet ou d'un client (relevée sur son site) et dans un style choisi sur des aperçus (keynote, démo produit, fil conducteur, teaser, plan-séquence), avec au choix une voix off qui pitche le projet : une voix IA, ou ta voix enregistrée en doublage sur le film |
 
 Chaque pièce a une **fraîcheur de 0 à 100**, qui baisse quand le code qu'elle décrit change après
 elle. Un **bandeau** au-dessus de la saisie de Claude Code la montre, et un **overlay** facultatif
@@ -102,9 +102,18 @@ mon-projet/
 | `banqueSon` | ta banque de sons pour les vidéos : un dossier avec `musique/` et, pour les bruitages, un `bruitages.json` |
 | `musique` | la musique par défaut des vidéos |
 | `ateliers` | où créer les ateliers des vidéos (par défaut `~/recap-film`) |
+| `envGemini` | pour la voix off IA : le chemin d'un fichier `.env` qui contient `GEMINI_API_KEY` (jamais la clé elle-même) |
+| `voix` | la voix IA par défaut (Achird ; ou Charon, Sulafat, Kore…) |
 
 **Aucune musique n'est livrée** : chacun utilise la sienne. Sans banque-son, Claude te demande un
 fichier audio pour chaque vidéo, ou la fait muette.
+
+**La voix off** : Claude écrit un pitch (le problème, la solution, comment ça marche, la preuve) et
+te le fait valider. La voix IA est [Gemini 3.8 Flash TTS](https://ai.google.dev/gemini-api/docs/speech-generation),
+gratuite avec une [clé Gemini](https://aistudio.google.com/apikey). Sur le palier gratuit, Google peut
+se servir des textes envoyés. Pour un projet confidentiel, choisis le **doublage** : une page locale
+passe le film avec ton texte qui défile dessous, enregistre ta voix en même temps, puis le film se
+recale sur elle. Rien ne sort de ta machine.
 
 ## Mettre à jour, retirer
 

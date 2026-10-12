@@ -1,11 +1,11 @@
-# La charte par défaut en mouvement (celle de 100s)
+# La marque 100s en mouvement (luca100s.fr)
 
-La charte que le modèle porte d'origine, celle du site luca100s.fr. Tout est déjà dans
-`modele/src/charte.ts` et `modele/src/elements.tsx` : s'en servir plutôt que réinventer.
-
-**Si le projet a sa propre DA**, ses couleurs, ses polices et son logo remplacent ceux d'ici
-(dans `charte.ts` et `elements.tsx`) ; le reste vaut pour tous les films : un seul accent, les
-signatures (surlignage, traînée, coins arrondis), le mouvement et le contenu.
+**Ce n'est plus une charte par défaut** : seulement pour un film de 100s, ou pour la signature de
+100s dans un duo (`references/da.md`). L'installer dans un atelier :
+`node OUTILS/da.mjs --appliquer 100s <atelier>` (écrit `da.json` et copie `marque100s.tsx` dans
+`src/marque/` : le S en pixels `PixelS`, le logo `Logo`, le volet `VoletPixels`). Les polices
+(Funnel Display, Funnel Sans, Martian Mono, Doto) sont déjà dans le modèle. Le style des films de
+100s, c'est le « Monde en cubes » (`styles/cubes.md`).
 
 ## Couleurs
 

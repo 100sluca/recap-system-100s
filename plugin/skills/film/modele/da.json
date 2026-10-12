@@ -1,0 +1,22 @@
+{
+	"nom": "DA neutre, à remplacer à l'étape « La DA » (references/da.md)",
+	"source": "style",
+	"couleurs": {
+		"fond": "#f4f4f2",
+		"surface": "#ffffff",
+		"encre": "#111113",
+		"doux": "#5c5d63",
+		"pale": "#a1a2a8",
+		"accent": "#3a5bff",
+		"surAccent": "#ffffff",
+		"accent2": "#111113",
+		"filet": "rgba(17,17,19,0.09)"
+	},
+	"polices": {
+		"titre": {"famille": "Inter", "graisse": 700},
+		"texte": {"famille": "Inter", "graisse": 400},
+		"mono": {"famille": "JetBrains Mono", "graisse": 400}
+	},
+	"logo": null,
+	"signature": null
+}

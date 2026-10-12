@@ -1,0 +1,123 @@
+[
+	{
+		"id": "keynote",
+		"numero": 1,
+		"nom": "Keynote",
+		"accroche": "Une keynote : la fenêtre et le logo, le curseur qui clique, l'icône qui se range dans la barre de menu, le panneau de verre où l'on tape. Coupes franches sur le temps, caméra toujours en mouvement.",
+		"pour": "lancement de produit, app, outil, plugin : ce qu'on montre sur la scène d'une keynote",
+		"dimension": "2D, verre et brume lumineuse, flou de mouvement",
+		"tempo": "115 à 128 temps/min, avec un temps fort net",
+		"references": "« Frame by Frame » (promptsmotion.com/notdwd-c2037d), CloudJoi (promptsmotion.com/lester-tyy-f897f7)",
+		"duree": 270,
+		"da": {
+			"nom": "palette du style « Keynote »",
+			"source": "style",
+			"couleurs": {"fond": "#f3f6fb", "surface": "#ffffff", "encre": "#0d1b2e", "doux": "#55657a", "pale": "#9aa8ba", "accent": "#2f6bff", "surAccent": "#ffffff", "accent2": "#4fd1c5", "filet": "rgba(13,27,46,0.08)"},
+			"polices": {"titre": {"famille": "Inter", "graisse": 700}, "texte": {"famille": "Inter", "graisse": 400}, "mono": {"famille": "JetBrains Mono", "graisse": 400}}
+		}
+	},
+	{
+		"id": "demo",
+		"numero": 2,
+		"nom": "Démo produit",
+		"accroche": "La démo, étape par étape, dans le noir : une question, la vraie fenêtre où le produit travaille, une légende dont les mots clés s'allument, le résultat, puis le logo.",
+		"pour": "outils, IA, SaaS, tout ce qui s'explique en « tu demandes, ça se fait »",
+		"dimension": "2D, fond noir et halo, flou de mouvement",
+		"tempo": "100 à 120 temps/min, posé",
+		"references": "Brieform (promptsmotion.com/majorbaguette-fb11d7), AgentHud (promptsmotion.com/jazzen-chen-4542ae), Spotify (promptsmotion.com/brainextends-e19ac3)",
+		"duree": 270,
+		"da": {
+			"nom": "palette du style « Démo produit »",
+			"source": "style",
+			"couleurs": {"fond": "#0e0d0b", "surface": "#1b1a17", "encre": "#f3f1ea", "doux": "#9c988e", "pale": "#5f5b53", "accent": "#d4ff3a", "surAccent": "#0e0d0b", "accent2": "#f3f1ea", "filet": "rgba(243,241,234,0.10)"},
+			"polices": {"titre": {"famille": "Inter", "graisse": 700}, "texte": {"famille": "Inter", "graisse": 400}, "mono": {"famille": "JetBrains Mono", "graisse": 400}}
+		}
+	},
+	{
+		"id": "fil",
+		"numero": 3,
+		"nom": "Fil conducteur",
+		"accroche": "Un seul point de couleur traverse tout le film : il bascule un interrupteur, rebondit sur une courbe, inonde l'écran, des mots tournent autour de lui en 3D, et le film boucle.",
+		"pour": "une marque, une idée, un système ; tout ce qui doit paraître fluide et maîtrisé",
+		"dimension": "2D et anneau de mots en 3D, flou de mouvement",
+		"tempo": "110 à 125 temps/min, un temps par geste",
+		"references": "le point orange (youmind.com/video-prompts/orange-dot-motion-film-12349), la balle blanche (youmind.com/video-prompts/ui-motion-system-video-12350)",
+		"duree": 300,
+		"da": {
+			"nom": "palette du style « Fil conducteur »",
+			"source": "style",
+			"couleurs": {"fond": "#f1eee8", "surface": "#ffffff", "encre": "#121212", "doux": "#6b665e", "pale": "#b3ada3", "accent": "#ff2d55", "surAccent": "#ffffff", "accent2": "#121212", "filet": "rgba(18,18,18,0.10)"},
+			"polices": {"titre": {"famille": "Bricolage Grotesque", "graisse": 800}, "texte": {"famille": "Inter", "graisse": 400}, "mono": {"famille": "JetBrains Mono", "graisse": 400}}
+		}
+	},
+	{
+		"id": "teaser",
+		"numero": 4,
+		"nom": "Teaser",
+		"accroche": "Une bande-annonce : le noir, des faisceaux de lumière, un signe qui s'embrase, deux phrases qui retournent une idée, un mur de cartes, puis le nom.",
+		"pour": "annoncer une nouveauté, une version, une sortie ; donner envie avant de montrer",
+		"dimension": "2D, lumière et lueurs, flou de mouvement",
+		"tempo": "85 à 110 temps/min, montée lente",
+		"references": "le teaser de feuille de route (youmind.com/fr-FR/video-prompts/product-roadmap-teaser-animation-12038)",
+		"duree": 270,
+		"da": {
+			"nom": "palette du style « Teaser »",
+			"source": "style",
+			"couleurs": {"fond": "#0a0807", "surface": "#16120f", "encre": "#f6efe7", "doux": "#a59a8f", "pale": "#5a5048", "accent": "#f2b24c", "surAccent": "#0a0807", "accent2": "#ffffff", "filet": "rgba(246,239,231,0.10)"},
+			"polices": {"titre": {"famille": "Inter", "graisse": 700}, "texte": {"famille": "Inter", "graisse": 400}, "mono": {"famille": "JetBrains Mono", "graisse": 400}, "appoint": {"famille": "Instrument Serif", "graisse": 400}}
+		}
+	},
+	{
+		"id": "sequence",
+		"numero": 5,
+		"nom": "Plan-séquence",
+		"accroche": "Un seul plan, sans coupe : très près d'un champ de saisie qui s'écrit, recul jusqu'au téléphone, la demande part, une couleur inonde l'écran et devient le résultat ; puis de grandes phrases sur le blanc.",
+		"pour": "une app, un assistant, une commande, un parcours d'utilisateur de bout en bout",
+		"dimension": "2D, un plan continu, flou de mouvement",
+		"tempo": "120 à 130 temps/min, un événement par temps",
+		"references": "Food craving (promptsmotion.com/ultimaxbt-2ddf1e), CloudJoi (promptsmotion.com/lester-tyy-f897f7)",
+		"duree": 300,
+		"da": {
+			"nom": "palette du style « Plan-séquence »",
+			"source": "style",
+			"couleurs": {"fond": "#ffffff", "surface": "#f4f4f6", "encre": "#0b0b0c", "doux": "#6e6e73", "pale": "#b0b0b5", "accent": "#2f6bff", "surAccent": "#ffffff", "accent2": "#d4ff3a", "filet": "rgba(0,0,0,0.08)"},
+			"polices": {"titre": {"famille": "Inter", "graisse": 700}, "texte": {"famille": "Inter", "graisse": 400}, "mono": {"famille": "JetBrains Mono", "graisse": 400}}
+		}
+	},
+	{
+		"id": "court-metrage",
+		"numero": 6,
+		"nom": "Court-métrage 3D",
+		"accroche": "Une vraie scène 3D écrite en code (Three.js) : une ville, un lieu, des personnages simples, une lumière qui change ; une petite histoire plutôt qu'une démo.",
+		"pour": "en option : un récit, une ambiance, un projet qu'on raconte par une histoire",
+		"dimension": "3D (Three.js), long à faire et à rendre",
+		"tempo": "selon l'histoire",
+		"references": "le premier tram du matin (youmind.com/video-prompts/morning-tram-code-animation-12384)",
+		"duree": 0,
+		"apercu": false,
+		"da": {
+			"nom": "palette du style « Court-métrage 3D »",
+			"source": "style",
+			"couleurs": {"fond": "#1b2233", "surface": "#2a3247", "encre": "#f4efe6", "doux": "#b7b0a4", "pale": "#6c7385", "accent": "#f2b14b", "surAccent": "#1b2233", "accent2": "#e9d27a", "filet": "rgba(244,239,230,0.12)"},
+			"polices": {"titre": {"famille": "Inter", "graisse": 700}, "texte": {"famille": "Inter", "graisse": 400}, "mono": {"famille": "JetBrains Mono", "graisse": 400}}
+		}
+	},
+	{
+		"id": "cubes",
+		"numero": 7,
+		"nom": "Monde en cubes",
+		"accroche": "L'essaim de cubes des films de luca100s.fr : seulement si on le demande.",
+		"pour": "les films de 100s",
+		"dimension": "3D (Three.js)",
+		"tempo": "100 à 110 temps/min",
+		"references": "exemples/100s-v2",
+		"duree": 180,
+		"masque": true,
+		"da": {
+			"nom": "palette du style « Monde en cubes »",
+			"source": "style",
+			"couleurs": {"fond": "#e9edf0", "surface": "#ffffff", "encre": "#1d2731", "doux": "#56606b", "pale": "#9aa4ad", "accent": "#00a884", "surAccent": "#ffffff", "accent2": "#1d2731", "filet": "rgba(29,39,49,0.10)"},
+			"polices": {"titre": {"famille": "Space Grotesk", "graisse": 700}, "texte": {"famille": "Inter", "graisse": 400}, "mono": {"famille": "JetBrains Mono", "graisse": 400}}
+		}
+	}
+]

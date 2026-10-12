@@ -41,7 +41,7 @@ const choix = arg('temps')
 if (choix) {
 	// Les images au tiers de leur taille (640 × 360), assemblées en 3 colonnes dans l'ordre demandé.
 	const dossier = join(atelier, 'out', `planche-${Date.now()}`);
-	writeFileSync(join(atelier, 'out', 'props-planche.json'), JSON.stringify({...props, son: false}));
+	writeFileSync(join(atelier, 'out', 'props-planche.json'), JSON.stringify({...props, son: false, rapide: true}));
 	execSync(
 		`npx remotion render Film "${dossier}" --props=out/props-planche.json --frames=${choix.join(',')} --image-format=png --scale=0.3333333 --concurrency=4 --log=error`,
 		{cwd: atelier, stdio: 'inherit'},

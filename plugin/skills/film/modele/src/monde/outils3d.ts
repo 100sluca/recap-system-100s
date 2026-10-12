@@ -1,6 +1,6 @@
 import {Easing, interpolate} from 'remotion';
 import * as THREE from 'three';
-import {DOUX, t} from '../charte';
+import {C, DOUX, t} from '../charte';
 
 // Petits outils de la chorégraphie 3D. Tout est fonction de l'image f : jamais d'horloge.
 
@@ -9,12 +9,14 @@ export type V3 = [number, number, number];
 /** Un cube à l'image f : position, rotation (radians), taille par axe, couleur. */
 export type Etat = {p: V3; r: V3; s: V3; c: THREE.Color};
 
+// Les couleurs de la DA du film, en couleurs Three.js.
 export const COULEURS3D = {
-	encre: new THREE.Color('#16110c'),
-	orange: new THREE.Color('#ff5f00'),
-	blanc: new THREE.Color('#ffffff'),
-	gris: new THREE.Color('#cbc4b8'),
-	pale: new THREE.Color('#e7e2d9'),
+	encre: new THREE.Color(C.encre),
+	accent: new THREE.Color(C.accent),
+	surface: new THREE.Color(C.surface),
+	doux: new THREE.Color(C.doux),
+	pale: new THREE.Color(C.pale),
+	fond: new THREE.Color(C.fond),
 };
 
 const cl = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
@@ -28,7 +30,7 @@ export const l3 = (a: V3, b: V3, k: number): V3 => [lerp(a[0], b[0], k), lerp(a[
 export const fois = (v: V3, k: number): V3 => [v[0] * k, v[1] * k, v[2] * k];
 export const cube = (s: number): V3 => [s, s, s];
 export const ZERO: V3 = [0, 0, 0];
-export const CACHE: Etat = {p: ZERO, r: ZERO, s: ZERO, c: COULEURS3D.blanc};
+export const CACHE: Etat = {p: ZERO, r: ZERO, s: ZERO, c: COULEURS3D.surface};
 
 /** Passe d'un état à l'autre (k de 0 à 1). Ajouter ensuite un arc : e.p[1] += Math.sin(Math.PI * k) * h. */
 export const melange = (a: Etat, b: Etat, k: number): Etat => ({

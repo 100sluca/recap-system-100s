@@ -1,0 +1,15 @@
+[
+	{"famille": "Inter", "fichier": "inter-400.woff2", "graisse": "400"},
+	{"famille": "Inter", "fichier": "inter-700.woff2", "graisse": "700"},
+	{"famille": "Space Grotesk", "fichier": "space-grotesk-500.woff2", "graisse": "500"},
+	{"famille": "Space Grotesk", "fichier": "space-grotesk-700.woff2", "graisse": "700"},
+	{"famille": "Archivo Black", "fichier": "archivo-black-400.woff2", "graisse": "400"},
+	{"famille": "Bricolage Grotesque", "fichier": "bricolage-grotesque-800.woff2", "graisse": "800"},
+	{"famille": "Instrument Serif", "fichier": "instrument-serif-400.woff2", "graisse": "400"},
+	{"famille": "Instrument Serif", "fichier": "instrument-serif-400-italic.woff2", "graisse": "400", "style": "italic"},
+	{"famille": "JetBrains Mono", "fichier": "jetbrains-mono-400.woff2", "graisse": "400"},
+	{"famille": "Funnel Display", "fichier": "funnel-display.woff2", "graisse": "300 800"},
+	{"famille": "Funnel Sans", "fichier": "funnel-sans.woff2", "graisse": "300 800"},
+	{"famille": "Martian Mono", "fichier": "martian-mono.woff2", "graisse": "100 800"},
+	{"famille": "Doto", "fichier": "doto.woff2", "graisse": "100 900"}
+]

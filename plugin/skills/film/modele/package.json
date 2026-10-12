@@ -7,6 +7,7 @@
     "@remotion/cli": "4.0.534",
     "@remotion/fonts": "4.0.534",
     "@remotion/media": "4.0.534",
+    "@remotion/motion-blur": "4.0.534",
     "@remotion/three": "4.0.534",
     "@remotion/transitions": "4.0.534",
     "@types/three": "0.186.0",

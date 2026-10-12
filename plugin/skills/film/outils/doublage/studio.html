@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Studio de doublage</title>
+<style>
+	:root {
+		--fond: #101012; --surface: #1b1b1f; --filet: #2c2c33; --texte: #ececef; --doux: #8d8d96;
+		--barre: #ff5f00; --rec: #e5484d; --ok: #30a46c;
+		font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+	}
+	* { box-sizing: border-box; }
+	body { margin: 0; background: var(--fond); color: var(--texte); }
+	header { display: flex; align-items: center; gap: 12px; padding: 12px 20px; border-bottom: 1px solid var(--filet); }
+	header b { font-size: 15px; }
+	#projet { color: var(--doux); font-size: 14px; }
+	#etat { margin-left: auto; font-size: 13px; padding: 4px 10px; border-radius: 99px; background: var(--surface); color: var(--doux); }
+	#etat.rec { background: var(--rec); color: #fff; }
+	main { max-width: 1000px; margin: 0 auto; padding: 16px; display: grid; gap: 14px; }
+	.scene { position: relative; background: #000; border-radius: 10px; overflow: hidden; aspect-ratio: 16 / 9;
+		width: min(100%, calc(52vh * 16 / 9)); justify-self: center; }
+	video { width: 100%; height: 100%; display: block; }
+	#decompte { position: absolute; inset: 0; display: grid; place-items: center; font-size: 160px; font-weight: 800;
+		color: #fff; background: rgba(0, 0, 0, .55); }
+	#decompte[hidden] { display: none; }
+	.rythmo { position: relative; height: 92px; background: var(--surface); border-radius: 10px; overflow: hidden; }
+	.piste { position: absolute; top: 0; left: 0; height: 100%; will-change: transform; }
+	.bloc { position: absolute; top: 34px; height: 46px; white-space: nowrap; }
+	.bloc span { display: inline-block; transform-origin: left center; font: 600 26px system-ui, sans-serif; line-height: 34px; color: var(--doux); }
+	.bloc::after { content: ''; position: absolute; left: 0; right: 0; bottom: 2px; height: 3px; border-radius: 2px; background: var(--filet); }
+	.bloc.actif span { color: #fff; }
+	.bloc.actif::after { background: var(--barre); }
+	.bloc.passe span { color: #55555d; }
+	.partie { position: absolute; top: 8px; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--barre); white-space: nowrap; }
+	.barre { position: absolute; top: 0; bottom: 0; left: 25%; width: 3px; background: var(--barre); box-shadow: 0 0 12px var(--barre); }
+	.prompteur { min-height: 120px; padding: 14px 18px; background: var(--surface); border-radius: 10px; }
+	#partie { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--barre); min-height: 16px; }
+	#phrase { font-size: 30px; font-weight: 650; line-height: 1.25; margin: 6px 0; min-height: 38px; }
+	#phrase.attente { color: var(--doux); }
+	#suivante { font-size: 17px; color: var(--doux); }
+	.commandes { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+	button { font: inherit; font-size: 15px; padding: 10px 16px; border-radius: 8px; border: 1px solid var(--filet);
+		background: var(--surface); color: var(--texte); cursor: pointer; }
+	button:hover:not(:disabled) { border-color: var(--doux); }
+	button:disabled { opacity: .4; cursor: default; }
+	button.rec { background: var(--rec); border-color: var(--rec); color: #fff; font-weight: 650; }
+	button.ok { background: var(--ok); border-color: var(--ok); color: #fff; font-weight: 650; }
+	label, select { font-size: 14px; color: var(--doux); }
+	select { background: var(--surface); color: var(--texte); border: 1px solid var(--filet); border-radius: 8px; padding: 8px; max-width: 260px; }
+	.vumetre { width: 140px; height: 8px; background: var(--filet); border-radius: 4px; overflow: hidden; }
+	#niveau { height: 100%; width: 0; background: var(--ok); transition: width 60ms linear; }
+	#resultat { white-space: pre-wrap; font: 13px/1.5 ui-monospace, Consolas, monospace; color: var(--doux); }
+	#resultat:empty { display: none; }
+	.fin { display: flex; gap: 10px; margin-top: 10px; }
+	.aide { color: var(--doux); font-size: 14px; line-height: 1.55; }
+	.aide summary { cursor: pointer; color: var(--texte); }
+	@media (max-width: 640px) { #phrase { font-size: 22px; } #decompte { font-size: 96px; } }
+</style>
+</head>
+<body>
+<header><b>Studio de doublage</b><span id="projet">__PROJET__</span><span id="etat">chargement…</span></header>
+<main>
+	<div class="scene"><video id="video" src="/video.mp4" playsinline preload="auto"></video><div id="decompte" hidden>3</div></div>
+	<div class="rythmo" id="rythmo"><div class="piste" id="piste"></div><div class="barre"></div></div>
+	<div class="prompteur"><div id="partie"></div><div id="phrase"></div><div id="suivante"></div></div>
+	<div class="commandes">
+		<button id="repeter">▶ Répéter</button>
+		<button id="enregistrer" class="rec">● Enregistrer <small>(espace)</small></button>
+		<button id="arreter" disabled>■ Arrêter</button>
+		<button id="reecouter" disabled>▶ Réécouter la prise</button>
+		<button id="garder" class="ok" disabled>✓ Garder cette prise</button>
+		<label><input type="checkbox" id="casque"> J'ai un casque</label>
+		<select id="entree" title="Micro"><option value="">Micro par défaut</option></select>
+		<div class="vumetre" title="Niveau du micro"><div id="niveau"></div></div>
+	</div>
+	<div id="resultat"></div>
+	<details class="aide" open>
+		<summary>Comment faire</summary>
+		<p>Le film passe, ton texte défile dessous de droite à gauche : <b>dis chaque phrase quand elle arrive sous la barre
+		orange</b>. La phrase à dire est aussi écrite en grand. Pas besoin d'être exact à la syllabe : les plans du film se
+		recaleront sur ta voix. « Répéter » passe le film sans enregistrer.</p>
+		<p>Un casque évite que la musique du film passe dans le micro (sans casque, baisse le son). Parle à 20 cm du micro,
+		dans une pièce calme. Refais autant de prises que tu veux : seule celle que tu gardes compte. Rien ne sort de ton
+		ordinateur.</p>
+	</details>
+</main>
+<script>
+const $ = (id) => document.getElementById(id);
+const video = $('video'), piste = $('piste'), rythmo = $('rythmo');
+let phrases = [], pxParSec = 160, blocs = [];
+let flux = null, analyseur = null, rec = null, morceaux = [], prise = null, decalage = 0, enCours = false, lecture = null;
+
+function etat(texte, rouge = false) { $('etat').textContent = texte; $('etat').classList.toggle('rec', rouge); }
+function boutons({enregistrer = true, arreter = false, reecouter = !!prise, garder = !!prise, repeter = true} = {}) {
+	$('enregistrer').disabled = !enregistrer; $('arreter').disabled = !arreter; $('reecouter').disabled = !reecouter;
+	$('garder').disabled = !garder; $('repeter').disabled = !repeter;
+}
+
+// ---------- la bande rythmo : chaque phrase occupe sur la bande la durée prévue pour la dire
+async function construire() {
+	phrases = (await (await fetch('/prevu.json')).json()).phrases;
+	await document.fonts.ready;
+	const mesure = document.createElement('canvas').getContext('2d');
+	mesure.font = '600 26px system-ui, sans-serif';
+	const largeurs = phrases.map((p) => mesure.measureText(p.texte).width);
+	const vitesses = phrases.map((p, i) => largeurs[i] / (p.fin - p.debut)).sort((a, b) => a - b);
+	pxParSec = Math.min(320, Math.max(90, vitesses[Math.floor(vitesses.length / 2)]));
+	let partie = null;
+	blocs = phrases.map((p, i) => {
+		if (p.partie !== partie) {
+			partie = p.partie;
+			const t = document.createElement('div');
+			t.className = 'partie'; t.textContent = p.partie; t.style.left = `${p.debut * pxParSec}px`;
+			piste.append(t);
+		}
+		const b = document.createElement('div');
+		const largeur = (p.fin - p.debut) * pxParSec;
+		b.className = 'bloc'; b.style.left = `${p.debut * pxParSec}px`; b.style.width = `${largeur}px`;
+		const s = document.createElement('span');
+		s.textContent = p.texte;
+		s.style.transform = `scaleX(${Math.min(1.8, Math.max(0.55, largeur / largeurs[i]))})`;
+		b.append(s); piste.append(b);
+		return b;
+	});
+	requestAnimationFrame(boucle);
+	etat('prêt'); boutons();
+}
+
+function boucle() {
+	const t = video.currentTime;
+	piste.style.transform = `translateX(${rythmo.clientWidth * 0.25 - t * pxParSec}px)`;
+	let actuelle = -1;
+	phrases.forEach((p, i) => {
+		const actif = t >= p.debut && t < p.fin;
+		if (actif) actuelle = i;
+		blocs[i].classList.toggle('actif', actif);
+		blocs[i].classList.toggle('passe', t >= p.fin);
+	});
+	const prochaine = phrases.findIndex((p) => p.debut > t);
+	const i = actuelle >= 0 ? actuelle : prochaine;
+	const p = phrases[i];
+	$('partie').textContent = p ? p.partie : '';
+	$('phrase').textContent = p ? p.texte : 'Fin du texte.';
+	$('phrase').classList.toggle('attente', actuelle < 0);
+	const ensuite = phrases[i + 1];
+	$('suivante').textContent = actuelle < 0 && p ? `dans ${(p.debut - t).toFixed(1).replace('.', ',')} s` : ensuite ? `Ensuite : ${ensuite.texte}` : '';
+	if (analyseur) {
+		const d = new Float32Array(analyseur.fftSize);
+		analyseur.getFloatTimeDomainData(d);
+		const crete = d.reduce((m, v) => Math.max(m, Math.abs(v)), 0);
+		$('niveau').style.width = `${Math.min(100, crete * 140)}%`;
+		$('niveau').style.background = crete > 0.95 ? 'var(--rec)' : 'var(--ok)';
+	}
+	requestAnimationFrame(boucle);
+}
+
+// ---------- le micro
+async function micro() {
+	if (flux) return flux;
+	const casque = $('casque').checked;
+	flux = await navigator.mediaDevices.getUserMedia({audio: {
+		deviceId: $('entree').value ? {exact: $('entree').value} : undefined,
+		echoCancellation: !casque, noiseSuppression: !casque, autoGainControl: false, channelCount: 1,
+	}});
+	const ctx = new AudioContext();
+	analyseur = ctx.createAnalyser(); analyseur.fftSize = 1024;
+	ctx.createMediaStreamSource(flux).connect(analyseur);
+	const entrees = (await navigator.mediaDevices.enumerateDevices()).filter((d) => d.kind === 'audioinput');
+	const choisi = $('entree').value;
+	$('entree').innerHTML = '<option value="">Micro par défaut</option>' +
+		entrees.map((d) => `<option value="${d.deviceId}">${d.label || 'Micro'}</option>`).join('');
+	$('entree').value = choisi;
+	return flux;
+}
+function changerMicro() { if (flux) { flux.getTracks().forEach((t) => t.stop()); flux = null; analyseur = null; } micro().catch(erreurMicro); }
+function erreurMicro(e) { etat('micro refusé'); $('resultat').textContent = `Le micro n'est pas accessible : ${e.message}. Autorise-le dans le navigateur, puis recharge la page.`; }
+
+const attendre = (ms) => new Promise((r) => setTimeout(r, ms));
+const auDebut = () => new Promise((r) => { video.pause(); if (video.currentTime === 0) return r(); video.addEventListener('seeked', r, {once: true}); video.currentTime = 0; });
+
+async function decompte() {
+	const d = $('decompte'); d.hidden = false;
+	for (const n of [3, 2, 1]) { d.textContent = n; await attendre(1000); }
+	d.hidden = true;
+}
+
+// ---------- la prise : l'enregistrement commence, puis le film ; le décalage dit où tombe l'image 0
+function typeAudio() {
+	return ['audio/webm;codecs=opus', 'audio/ogg;codecs=opus', 'audio/mp4'].find((t) => MediaRecorder.isTypeSupported(t)) || '';
+}
+
+async function enregistrer() {
+	if (enCours) return;
+	try { await micro(); } catch (e) { return erreurMicro(e); }
+	arreterLecture();
+	enCours = true; prise = null; morceaux = []; $('resultat').textContent = '';
+	boutons({enregistrer: false, arreter: true, repeter: false});
+	await auDebut();
+	rec = new MediaRecorder(flux, typeAudio() ? {mimeType: typeAudio()} : undefined);
+	rec.ondataavailable = (e) => e.data.size && morceaux.push(e.data);
+	const debutRec = await new Promise((r) => { rec.onstart = () => r(performance.now()); rec.start(); });
+	etat('● enregistrement', true);
+	await decompte();
+	if (!enCours) return;
+	decalage = null;
+	if ('requestVideoFrameCallback' in video) {
+		video.requestVideoFrameCallback((now, meta) => { decalage = ((meta.presentationTime ?? now) - debutRec) / 1000 - meta.mediaTime; });
+	}
+	video.addEventListener('playing', () => { if (decalage === null) decalage = (performance.now() - debutRec) / 1000 - video.currentTime; }, {once: true});
+	video.onended = arreter;
+	await video.play();
+}
+
+function arreter() {
+	video.pause();
+	video.onended = null;
+	if (!enCours) return arreterLecture();
+	enCours = false;
+	$('decompte').hidden = true;
+	rec.onstop = () => {
+		prise = new Blob(morceaux, {type: rec.mimeType || 'audio/webm'});
+		etat(`prise prête · ${video.currentTime.toFixed(0)} s`);
+		boutons();
+	};
+	rec.stop();
+}
+
+// La réécoute : la prise décodée, jouée en même temps que le film (calée par le décalage).
+async function reecouter() {
+	if (!prise) return;
+	arreterLecture();
+	const ctx = new AudioContext();
+	const tampon = await ctx.decodeAudioData(await prise.arrayBuffer());
+	await auDebut();
+	const src = ctx.createBufferSource(); src.buffer = tampon; src.connect(ctx.destination);
+	await video.play();
+	src.start(0, Math.max(0, (decalage ?? 0) + video.currentTime));
+	lecture = {ctx, src};
+	etat('réécoute'); boutons({arreter: true});
+	video.onended = arreter;
+}
+function arreterLecture() { if (lecture) { try { lecture.src.stop(); } catch {} lecture.ctx.close(); lecture = null; } if (!enCours) { etat(prise ? 'prise prête' : 'prêt'); boutons(); } }
+
+async function repeter() { arreterLecture(); await auDebut(); video.onended = null; etat('répétition'); boutons({arreter: true, enregistrer: false}); video.play(); video.onended = () => { etat('prêt'); boutons(); }; }
+
+async function garder() {
+	if (!prise) return;
+	boutons({enregistrer: false, repeter: false, garder: false, reecouter: false});
+	etat('calage de la prise…');
+	const rep = await fetch(`/prise?decalage=${(decalage ?? 0).toFixed(4)}`, {method: 'POST', body: prise, headers: {'Content-Type': prise.type}});
+	const r = await rep.json();
+	if (!r.ok) { etat('erreur'); $('resultat').textContent = r.erreur; return boutons(); }
+	etat(`prise ${r.prise} gardée`);
+	$('resultat').textContent = r.sortie;
+	const fin = document.createElement('div'); fin.className = 'fin';
+	fin.innerHTML = '<button class="ok" id="terminer">C\'est bon, terminer</button><button id="refaire">Refaire une prise</button>';
+	$('resultat').append(fin);
+	$('terminer').onclick = async () => { await fetch('/fin', {method: 'POST'}); etat('terminé'); document.body.innerHTML = '<p style="padding:40px;font-size:20px">C\'est enregistré. Tu peux fermer cet onglet : Claude refait le film sur ta voix.</p>'; };
+	$('refaire').onclick = () => { $('resultat').textContent = ''; prise = null; etat('prêt'); boutons(); };
+	boutons({enregistrer: false, repeter: false, reecouter: false, garder: false});
+}
+
+$('enregistrer').onclick = enregistrer;
+$('arreter').onclick = arreter;
+$('reecouter').onclick = reecouter;
+$('garder').onclick = garder;
+$('repeter').onclick = repeter;
+$('entree').onchange = changerMicro;
+$('casque').onchange = () => { if (flux) changerMicro(); };
+document.addEventListener('keydown', (e) => {
+	if (e.code === 'Space' && !e.target.closest('button, select, input')) { e.preventDefault(); enCours ? arreter() : enregistrer(); }
+	if (e.code === 'Escape') arreter();
+});
+construire().catch((e) => { etat('erreur'); $('resultat').textContent = String(e); });
+</script>
+</body>
+</html>

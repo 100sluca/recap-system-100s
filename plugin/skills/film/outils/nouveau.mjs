@@ -1,11 +1,17 @@
-// Crée l'atelier d'une vidéo : une copie du modèle Remotion, la musique et les bruitages,
-// l'installation des paquets, le tempo de la musique et le journal du bilan.
+// Crée l'atelier d'une vidéo : une copie du modèle Remotion, les bruitages, l'installation des
+// paquets, la DA, puis (quand elle est choisie) la musique et son tempo, et le journal du bilan.
 //
-//   node nouveau.mjs --projet <nom> --version <N> [--musique "<fichier>"] [--muet]
+//   node nouveau.mjs --projet <nom> --version <N> [--da <dossier|marque>] [--style <id>] [--musique "<fichier>"] [--muet]
 //
-// La musique, dans l'ordre : --musique (un fichier, ou un nom de la banque-son), le réglage
-// « musique », sinon rien : l'outil liste alors les morceaux de la banque-son et s'arrête. --muet
-// fait un film sans son (105 temps par minute).
+// En deux temps, dans l'ordre du circuit (SKILL.md) :
+// 1. à la création, la DA : --da installe une DA relevée (dossier de da.mjs) ou une marque rangée
+//    (outils/da.mjs --appliquer) ; sinon --style installe la palette propre d'un style ; sinon la DA
+//    neutre du modèle, à remplacer (references/da.md). Sans --musique, l'atelier est créé muet et
+//    l'outil liste les morceaux de la banque-son, avec ceux que les derniers films ont déjà pris ;
+// 2. une fois le style choisi, la même commande avec --musique (un fichier, ou un nom de la
+//    banque-son) pose la musique dans l'atelier existant et mesure son tempo.
+// Jamais la même musique d'un film à l'autre par défaut : le réglage « musique » n'est plus qu'une
+// suggestion. --muet : un film sans son, assumé (105 temps par minute).
 // Les bruitages : ceux que <banque-son>/bruitages.json nomme ({"clic.wav": "sound-effects/…", …}).
 // Sans banque-son, le film n'a pas de bruitages ; le modèle se tait là où il en attendait.
 // Réglages (banqueSon, musique, ateliers) : node ../../recap-system-100s/reglages.mjs
@@ -27,12 +33,15 @@ const arg = (nom) => {
 const projet = arg('projet');
 const version = arg('version') ?? '1';
 const muet = process.argv.includes('--muet');
-if (!projet) throw new Error('Usage : node nouveau.mjs --projet <nom> --version <N> [--musique "<fichier>"] [--muet]');
+const style = arg('style');
+const daSource = arg('da');
+if (!projet) throw new Error('Usage : node nouveau.mjs --projet <nom> --version <N> [--da <dossier|marque>] [--style <id>] [--musique "<fichier>"] [--muet]');
 
 const SKILL = join(import.meta.dirname, '..');
 const reglages = lireReglages();
 const BANQUE = reglages.banqueSon && existsSync(reglages.banqueSon) ? reglages.banqueSon : null;
-const atelier = join(reglages.ateliers || join(homedir(), 'recap-film'), `${projet}-v${version}`);
+const RACINE = reglages.ateliers || join(homedir(), 'recap-film');
+const atelier = join(RACINE, `${projet}-v${version}`);
 
 // Un fichier de musique : absolu, relatif au dossier courant, ou cherché dans la banque-son.
 function trouverMusique(nom) {
@@ -41,26 +50,45 @@ function trouverMusique(nom) {
 	return candidats.find((c) => existsSync(c)) ?? null;
 }
 
-if (existsSync(join(atelier, 'package.json'))) {
-	console.log(`L'atelier existe déjà : ${atelier}`);
-} else {
-	const musique = muet ? null : trouverMusique(arg('musique')) ?? trouverMusique(reglages.musique);
-	if (!muet && !musique) {
-		const morceaux = BANQUE && existsSync(join(BANQUE, 'musique')) ? readdirSync(join(BANQUE, 'musique')).filter((f) => /\.(mp3|wav|m4a|ogg|flac)$/i.test(f)) : [];
-		console.error(arg('musique') ? `Musique introuvable : ${arg('musique')}` : 'Aucune musique choisie.');
-		if (morceaux.length) console.error(`Morceaux de la banque-son (${join(BANQUE, 'musique')}) :\n  ${morceaux.join('\n  ')}`);
-		else console.error('Pas de banque-son réglée : passer --musique "<fichier audio>", ou --muet pour un film sans son.');
-		process.exit(1);
-	}
+// Les morceaux de la banque-son, avec les films qui les ont déjà pris (commentaire de leur reglages.ts).
+function listerMusiques() {
+	const morceaux = BANQUE && existsSync(join(BANQUE, 'musique')) ? readdirSync(join(BANQUE, 'musique')).filter((f) => /\.(mp3|wav|m4a|ogg|flac)$/i.test(f)) : [];
+	const prises = {};
+	if (existsSync(RACINE))
+		for (const a of readdirSync(RACINE)) {
+			const r = join(RACINE, a, 'src', 'reglages.ts');
+			const m = existsSync(r) && readFileSync(r, 'utf-8').match(/Musique : (.+?) ;/);
+			if (m && a !== basename(atelier)) (prises[m[1]] ??= []).push(a);
+		}
+	if (morceaux.length) console.log(`Morceaux de la banque-son (${join(BANQUE, 'musique')}) :\n  ${morceaux.map((m) => (prises[m] ? `${m}  (déjà pris : ${prises[m].join(', ')})` : m)).join('\n  ')}`);
+	else console.log('Pas de banque-son réglée : demander un fichier audio dont l\'utilisateur a les droits (jamais en télécharger un), ou --muet.');
+	if (reglages.musique) console.log(`Réglage « musique » (une suggestion) : ${reglages.musique}`);
+}
 
+// Les réglages de la vidéo (reglages.ts) : la musique, son tempo, la durée et les bruitages.
+function ecrireReglages({nomMusique, origine, bpm, premier, sons, nbTemps}) {
+	writeFileSync(
+		join(atelier, 'src', 'reglages.ts'),
+		[
+			`// Réglages propres à cette vidéo (${projet} v${version}), écrits par outils/nouveau.mjs.`,
+			origine ? `// Musique : ${origine} ; tempo mesuré par outils/tempo.mjs.` : muet ? '// Film muet : pas de musique, 105 temps par minute.' : '// Musique pas encore choisie (nouveau.mjs --musique, une fois le style choisi).',
+			`export const MUSIQUE = '${nomMusique ? `son/${nomMusique}` : ''}';`,
+			`export const BPM = ${bpm};`,
+			`export const PREMIER_TEMPS = ${premier}; // en secondes`,
+			`export const NB_TEMPS = ${nbTemps}; // durée du film, en temps de musique`,
+			`export const SONS: readonly string[] = ${JSON.stringify(sons)};`,
+			'',
+		].join('\n'),
+	);
+}
+
+const neuf = !existsSync(join(atelier, 'package.json'));
+if (neuf) {
 	cpSync(join(SKILL, 'modele'), atelier, {recursive: true});
 	// Le journal du bilan : la première étape commence maintenant.
 	appendFileSync(join(atelier, 'journal.jsonl'), JSON.stringify({etape: 'Préparation', t: new Date().toISOString()}) + '\n');
 	mkdirSync(join(atelier, 'public', 'son'), {recursive: true});
 	mkdirSync(join(atelier, 'public', 'captures'), {recursive: true});
-
-	const nomMusique = musique ? `musique${extname(musique)}` : '';
-	if (musique) copyFileSync(musique, join(atelier, 'public', 'son', nomMusique));
 
 	// Les bruitages de la banque, s'il y en a une.
 	const sons = [];
@@ -75,32 +103,52 @@ if (existsSync(join(atelier, 'package.json'))) {
 		}
 	}
 	console.log(sons.length ? `Bruitages : ${sons.join(', ')}` : 'Pas de bruitages (pas de bruitages.json dans la banque-son).');
+	ecrireReglages({nomMusique: '', origine: '', bpm: 105, premier: 0, sons, nbTemps: 16});
 
 	console.log('Installation des paquets (environ une minute)…');
 	execSync('npm install --no-audit --no-fund --loglevel=error', {cwd: atelier, stdio: 'inherit'});
+} else {
+	console.log(`L'atelier existe déjà : ${atelier}`);
+}
 
-	// Le tempo : tout le film s'écrit en temps de musique.
-	let bpm = 105;
-	let premier = 0;
-	if (musique) {
-		const sortie = execFileSync(process.execPath, [join(SKILL, 'outils', 'tempo.mjs'), musique, '--atelier', atelier], {encoding: 'utf-8'});
-		console.log(sortie.trim().split('\n')[0]);
-		const m = sortie.match(/BPM=([\d.]+) PREMIER_TEMPS=([\d.]+)/);
-		if (m) [bpm, premier] = [Number(m[1]), Number(m[2])];
+// La musique : posée maintenant si elle est donnée (à la création ou plus tard), sinon listée.
+if (arg('musique')) {
+	const musique = trouverMusique(arg('musique'));
+	if (!musique) {
+		console.error(`Musique introuvable : ${arg('musique')}`);
+		listerMusiques();
+		process.exit(1);
 	}
-	writeFileSync(
-		join(atelier, 'src', 'reglages.ts'),
-		[
-			`// Réglages propres à cette vidéo (${projet} v${version}), écrits par outils/nouveau.mjs.`,
-			musique ? `// Musique : ${basename(musique)} ; tempo mesuré par outils/tempo.mjs.` : '// Film muet : pas de musique, 105 temps par minute.',
-			`export const MUSIQUE = '${nomMusique ? `son/${nomMusique}` : ''}';`,
-			`export const BPM = ${bpm};`,
-			`export const PREMIER_TEMPS = ${premier}; // en secondes`,
-			'export const NB_TEMPS = 16; // durée du film, en temps de musique',
-			`export const SONS: readonly string[] = ${JSON.stringify(sons)};`,
-			'',
-		].join('\n'),
-	);
+	const nomMusique = `musique${extname(musique)}`;
+	copyFileSync(musique, join(atelier, 'public', 'son', nomMusique));
+	const sortie = execFileSync(process.execPath, [join(SKILL, 'outils', 'tempo.mjs'), musique, '--atelier', atelier], {encoding: 'utf-8'});
+	console.log(sortie.trim().split('\n')[0]);
+	const m = sortie.match(/BPM=([\d.]+) PREMIER_TEMPS=([\d.]+)/);
+	const avant = readFileSync(join(atelier, 'src', 'reglages.ts'), 'utf-8');
+	ecrireReglages({
+		nomMusique,
+		origine: basename(musique),
+		bpm: m ? Number(m[1]) : 105,
+		premier: m ? Number(m[2]) : 0,
+		sons: JSON.parse(avant.match(/SONS: readonly string\[\] = (\[.*\]);/)?.[1] ?? '[]'),
+		nbTemps: Number(avant.match(/NB_TEMPS = (\d+)/)?.[1] ?? 16),
+	});
+} else if (neuf && !muet) {
+	console.log('Musique : pas encore choisie. La choisir selon le style (styles/<id>.md), puis relancer avec --musique "<fichier>".');
+	listerMusiques();
+}
+
+// La DA : relevée ou marque (--da), sinon la palette du style (--style), sinon la DA neutre du modèle.
+if (daSource) {
+	execFileSync(process.execPath, [join(SKILL, 'outils', 'da.mjs'), '--appliquer', daSource, atelier], {stdio: 'inherit'});
+} else if (style) {
+	const catalogue = JSON.parse(readFileSync(join(atelier, 'src', 'styles', 'catalogue.json'), 'utf-8'));
+	const choisi = catalogue.find((x) => x.id === style);
+	if (!choisi) throw new Error(`Style inconnu : ${style}. Styles : ${catalogue.map((x) => x.id).join(', ')}`);
+	writeFileSync(join(atelier, 'da.json'), JSON.stringify(choisi.da, null, '\t') + '\n');
+	console.log(`DA : la palette du style « ${choisi.nom} ».`);
+} else if (neuf) {
+	console.log('DA : la DA neutre du modèle, à remplacer (references/da.md, outils/da.mjs).');
 }
 console.log(`Atelier : ${atelier}`);
 console.log(`Studio  : npx remotion studio --port=3073 (dans l'atelier)`);

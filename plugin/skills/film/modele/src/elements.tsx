@@ -1,25 +1,9 @@
 import React, {useCallback, useEffect, useLayoutEffect, useState} from 'react';
-import {
-	Img,
-	continueRender,
-	delayRender,
-	interpolate,
-	interpolateColors,
-	spring,
-	staticFile,
-	useCurrentFrame,
-	useVideoConfig,
-} from 'remotion';
-import {
-	C,
-	PIXEL_ORDRE,
-	POLICE,
-	TEMPS,
-	TRAINE,
-	TRAINEE_CLAIR,
-	TRAINEE_SOMBRE,
-	clamp,
-} from './charte';
+import {Img, continueRender, delayRender, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
+import {C, POLICE, TRAINE, clamp} from './charte';
+
+// Les éléments de base, communs à tous les styles : ils prennent les couleurs de la DA du film par
+// rôle (C.fond, C.accent…). Les kits propres à un style sont dans src/styles/<id>/.
 
 /**
  * Position d'un élément dans la scène (racine marquée data-scene), lue sur la mise
@@ -70,7 +54,7 @@ export const entree = (
 	};
 };
 
-/** Étiquette en chasse fixe, comme sur le site : « ■ VEILLE », « [ 100S EN CHIFFRES ] ». */
+/** Étiquette en chasse fixe : « ■ VEILLE », « [ EN CHIFFRES ] ». */
 export const Etiquette: React.FC<{
 	readonly children: React.ReactNode;
 	readonly debut?: number;
@@ -95,7 +79,7 @@ export const Etiquette: React.FC<{
 			}}
 		>
 			{puce ? (
-				<span style={{width: 13, height: 13, background: C.orange, flexShrink: 0}} />
+				<span style={{width: 13, height: 13, background: C.accent, flexShrink: 0}} />
 			) : null}
 			{children}
 		</div>
@@ -122,7 +106,7 @@ export const Mots: React.FC<{
 };
 
 /**
- * Le surlignage du site : un bloc plein se déploie de gauche à droite derrière
+ * Le surlignage : un bloc plein se déploie de gauche à droite derrière
  * les mots, puis le texte monte dedans.
  */
 export const Bloc: React.FC<{
@@ -132,7 +116,7 @@ export const Bloc: React.FC<{
 	readonly couleur?: string;
 	readonly duree?: number;
 	readonly style?: React.CSSProperties;
-}> = ({children, debut, fond = C.orange, couleur = C.blanc, duree = 12, style}) => {
+}> = ({children, debut, fond = C.accent, couleur = C.surAccent, duree = 12, style}) => {
 	const frame = useCurrentFrame();
 	const p = interpolate(frame, [debut, debut + duree], [0, 1], {...clamp, easing: TRAINE});
 	const q = interpolate(frame, [debut + duree * 0.3, debut + duree * 1.2], [0, 1], {
@@ -173,122 +157,6 @@ export const Bloc: React.FC<{
 	);
 };
 
-/**
- * Le S en pixels « la traînée » : les dix carrés se posent dans l'ordre du tracé.
- * Chaque carré arrive orange vif et s'éteint vers sa couleur finale : la tête de
- * la traînée court le long du S.
- */
-export const PixelS: React.FC<{
-	readonly hauteur: number;
-	readonly debut?: number;
-	readonly pas?: number;
-	readonly ton?: 'clair' | 'sombre';
-	readonly encre?: string;
-	readonly style?: React.CSSProperties;
-}> = ({hauteur, debut = 0, pas = TEMPS / 2, ton = 'clair', encre = C.encre, style}) => {
-	const frame = useCurrentFrame();
-	const {fps} = useVideoConfig();
-	const u = hauteur / 53;
-	const trainee = ton === 'clair' ? TRAINEE_CLAIR : TRAINEE_SOMBRE;
-	return (
-		<div style={{position: 'relative', width: 42 * u, height: 53 * u, flexShrink: 0, ...style}}>
-			{PIXEL_ORDRE.map(([col, row], i) => {
-				const d = debut + Math.round(i * pas);
-				const p = frame < d ? 0 : spring({frame: frame - d, fps, config: {damping: 200, mass: 0.5}});
-				const [pc, pr] = i === 0 ? [col + 1, row] : PIXEL_ORDRE[i - 1];
-				const couleur = interpolateColors(frame, [d + 2, d + 10], [C.orange, trainee[i] ?? encre]);
-				return (
-					<div
-						key={i}
-						style={{
-							position: 'absolute',
-							left: col * 11 * u,
-							top: row * 11 * u,
-							width: 9 * u,
-							height: 9 * u,
-							borderRadius: 2.2 * u,
-							background: couleur,
-							opacity: p > 0.01 ? 1 : 0,
-							scale: String(0.3 + 0.7 * p),
-							translate: `${(pc - col) * 11 * u * (1 - p)}px ${(pr - row) * 11 * u * (1 - p)}px`,
-						}}
-					/>
-				);
-			})}
-		</div>
-	);
-};
-
-/**
- * Le logo complet « luca100 » + S, posé sur la ligne de base comme une lettre.
- * Avec `grand`, le S naît en très grand au centre puis vient prendre sa place de
- * lettre ; « luca100 » sort alors de derrière lui, de droite à gauche.
- */
-export const Logo: React.FC<{
-	readonly taille: number;
-	readonly top: number;
-	readonly debutPixels: number;
-	readonly pasPixels: number;
-	readonly debutTexte: number;
-	readonly grand?: {cx: number; cy: number; hauteur: number; debut: number; duree: number};
-}> = ({taille, top, debutPixels, pasPixels, debutTexte, grand}) => {
-	const frame = useCurrentFrame();
-	const ref = React.useRef<HTMLDivElement>(null);
-	const pos = usePosition(ref);
-	const hS = taille * 0.7;
-	const m = grand
-		? interpolate(frame, [grand.debut, grand.debut + grand.duree], [0, 1], {...clamp, easing: TRAINE})
-		: 1;
-	const r = interpolate(frame, [debutTexte, debutTexte + 18], [0, 1], {...clamp, easing: TRAINE});
-	let place: React.CSSProperties = {};
-	if (grand && pos) {
-		const k = grand.hauteur / hS;
-		const fx = pos.x + pos.l / 2;
-		const fy = pos.y + pos.h / 2;
-		place = {
-			translate: `${(grand.cx - fx) * (1 - m)}px ${(grand.cy - fy) * (1 - m)}px`,
-			scale: String(k + (1 - k) * m),
-		};
-	}
-	return (
-		<div
-			style={{
-				position: 'absolute',
-				left: 0,
-				width: 1920,
-				top,
-				display: 'flex',
-				justifyContent: 'center',
-				alignItems: 'baseline',
-				fontFamily: POLICE.titre,
-				fontWeight: 500,
-				fontSize: taille,
-				lineHeight: 1,
-				letterSpacing: '-0.045em',
-				color: C.encre,
-			}}
-		>
-			<span
-				style={{
-					display: 'inline-block',
-					clipPath: `inset(-20% -4% -30% ${(1 - r) * 100}%)`,
-					translate: `${(1 - r) * 0.35}em 0px`,
-					opacity: r > 0 ? 1 : 0,
-				}}
-			>
-				<span style={{opacity: 0.45}}>luca</span>
-				<span>100</span>
-			</span>
-			<div
-				ref={ref}
-				style={{marginLeft: '0.125em', visibility: grand && !pos ? 'hidden' : 'visible', ...place}}
-			>
-				<PixelS hauteur={hS} debut={debutPixels} pas={pasPixels} />
-			</div>
-		</div>
-	);
-};
-
 /** Un chiffre qui roule de `de` à `a` (colonne 0→9 comme le compteur du site). */
 const Rouleau: React.FC<{readonly de: number; readonly a: number; readonly p: number}> = ({de, a, p}) => {
 	const cible = a >= de ? a : a + 10;
@@ -307,7 +175,7 @@ const Rouleau: React.FC<{readonly de: number; readonly a: number; readonly p: nu
 };
 
 /**
- * Compteur à rouleaux en Doto, comme les chiffres de luca100s.fr : chaque chiffre
+ * Compteur à rouleaux (police des chiffres de la DA) : chaque chiffre
  * roule depuis `depuis` (0 par défaut) jusqu'à sa valeur ; le dernier chiffre part en premier.
  */
 export const Odometre: React.FC<{
@@ -323,7 +191,7 @@ export const Odometre: React.FC<{
 	return (
 		<span
 			style={{
-				fontFamily: POLICE.points,
+				fontFamily: POLICE.chiffres,
 				fontWeight: 900,
 				display: 'inline-flex',
 				lineHeight: 1,
@@ -362,9 +230,9 @@ export const Fenetre: React.FC<{
 				height: hauteur,
 				borderRadius: 20,
 				overflow: 'hidden',
-				background: C.papier,
+				background: C.fond,
 				boxShadow:
-					'0 50px 100px -40px rgba(22,17,12,0.45), 0 18px 36px -18px rgba(22,17,12,0.25), 0 0 0 1px rgba(22,17,12,0.08)',
+					'0 50px 100px -40px rgba(0,0,0,0.45), 0 18px 36px -18px rgba(0,0,0,0.25), 0 0 0 1px rgba(0,0,0,0.08)',
 				...style,
 			}}
 		>
@@ -376,7 +244,7 @@ export const Fenetre: React.FC<{
 	);
 };
 
-/** Flèche ↗ des boutons du site. */
+/** Flèche ↗ (bouton, lien). */
 export const FlecheDiag: React.FC<{readonly taille: number; readonly couleur: string}> = ({
 	taille,
 	couleur,
@@ -385,51 +253,3 @@ export const FlecheDiag: React.FC<{readonly taille: number; readonly couleur: st
 		<path d="M7 17L17 7M9 7h8v8" stroke={couleur} strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" />
 	</svg>
 );
-
-/**
- * Le volet maison : une grille de carrés arrondis balaie l'écran en diagonale.
- * La tête du balayage est orange et s'éteint vers l'encre, comme la traînée du S ;
- * à mi-course l'écran est couvert, puis les carrés se retirent sur la scène suivante.
- */
-export const VoletPixels: React.FC = () => {
-	const frame = useCurrentFrame();
-	const {durationInFrames, width, height} = useVideoConfig();
-	const cols = 16;
-	const rows = 9;
-	const cellule = width / cols;
-	const milieu = durationInFrames / 2;
-	const montee = 5;
-	const etalement = milieu - montee;
-	const carres = [];
-	for (let r = 0; r < rows; r++) {
-		for (let c = 0; c < cols; c++) {
-			const rang = (c + r * 0.9) / (cols - 1 + (rows - 1) * 0.9);
-			const d1 = rang * etalement;
-			const d2 = milieu + rang * etalement;
-			const entre = interpolate(frame, [d1, d1 + montee], [0, 1], {...clamp, easing: TRAINE});
-			const sort = interpolate(frame, [d2, d2 + montee], [0, 1], {...clamp, easing: TRAINE});
-			const s = entre * (1 - sort);
-			if (s <= 0.001) continue;
-			const couleur =
-				frame < milieu
-					? interpolateColors(frame, [d1 + 1, d1 + 7], [C.orange, C.encre])
-					: interpolateColors(frame, [d2 - 3, d2 + 1], [C.encre, C.orange]);
-			carres.push(
-				<div
-					key={`${r}-${c}`}
-					style={{
-						position: 'absolute',
-						left: c * cellule,
-						top: r * cellule,
-						width: cellule + 1,
-						height: cellule + 1,
-						background: couleur,
-						scale: String(s),
-						borderRadius: interpolate(s, [0.5, 1], [cellule * 0.24, 0], clamp),
-					}}
-				/>,
-			);
-		}
-	}
-	return <div style={{position: 'absolute', width, height, overflow: 'hidden'}}>{carres}</div>;
-};

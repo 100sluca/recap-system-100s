@@ -1,8 +1,12 @@
 # Recettes 3D (Three.js dans Remotion)
 
-Le modèle fournit `src/monde/kit3d.tsx` (`Scene3D`, `Cubes`, `GrosCube`, `Page`, `useTextures`)
-et `src/monde/outils3d.ts` (`ease`, `melange`, `cameraDepuisCles`…). L'exemple complet est
-`exemples/100s-v2/` (« Un matin de veille », 600 cubes, 8 scènes, une seule caméra).
+La 3D en Three.js sert au **court-métrage 3D** (`styles/court-metrage.md`) et au **Monde en cubes**
+(`styles/cubes.md`) : `src/monde/kit3d.tsx` (`Scene3D`, `Cubes`, `GrosCube`, `Page`, `useTextures`,
+`Lettres3D`) et `src/monde/outils3d.ts` (`ease`, `melange`, `cameraDepuisCles`…), dont l'exemple
+complet est `exemples/100s-v2/` (« Un matin de veille », 600 cubes, 8 scènes, une seule caméra).
+Les règles Remotion valent pour les deux ; la suite de cette page décrit surtout le Monde en cubes.
+Les couleurs viennent de la DA (`COULEURS3D` = la DA du film en couleurs Three.js ; `useDA()` dans
+un aperçu) : jamais l'orange ni le papier de 100s en dur.
 
 ## Les règles de Remotion
 
@@ -33,7 +37,7 @@ export const etat = (i: number, f: number): Etat => {
 - **Décaler** chaque cube (`debut + rang * pas`) : vagues, cascades, traînées.
 - Taille 0 = cube caché. Le hasard : `random('cle-' + i)` de Remotion (reproductible).
 - Formes : un cube aplati `s: [1.5, 0.95, 0.1]` fait une fiche ; un cube `0.92` laisse un joint.
-- Couleurs : `COULEURS3D` ; la traînée = `orange.clone().lerp(finale, ease(f, a+2, a+14))`.
+- Couleurs : `COULEURS3D` ; la traînée = `accent.clone().lerp(finale, ease(f, a+2, a+14))`.
 
 ## La caméra
 
@@ -48,10 +52,10 @@ export const etat = (i: number, f: number): Etat => {
 
 ## Ce qui rend bien
 
-- Sol papier qui ne reçoit que les ombres, trame légère, brouillard papier : profondeur sans décor.
+- Sol qui ne reçoit que les ombres, trame légère (`trame`), brouillard de la couleur du fond : profondeur sans décor.
 - Vraies pages (`Page` + `useTextures`) posées comme des tableaux ; une dalle de cubes qui
   s'efface en vague diagonale révèle une page derrière elle.
-- Un plan lumineux (boîte orange à 13 % d'opacité + arêtes pleines) qui balaie la scène.
+- Un plan lumineux (boîte dans l'accent à 13 % d'opacité + arêtes pleines) qui balaie la scène.
 - Le S du logo en gros cubes (`GrosCube`), chacun formé par l'essaim de petits cubes qui l'atteint.
 
 ## Chiffres en cubes (une heure, un compteur)
@@ -120,6 +124,6 @@ planche). Rester à moins de 190 unités de ce qu'on regarde : au-delà, le brou
   vides (chaque image d'une planche est souvent la première de son onglet).
 - Un plan transparent qui s'étend jusqu'à la caméra remplit l'écran : l'arrêter avant elle.
 - Un objet grand et proche passe devant le titre : vérifier sur la planche, déplacer la caméra.
-- `flat` sur le canvas (pas de tone mapping) pour garder l'orange exact ; textures en
+- `flat` sur le canvas (pas de tone mapping) pour garder l'accent exact ; textures en
   `SRGBColorSpace` et `meshBasicMaterial` `toneMapped={false}` pour les captures.
 - Avertissements « THREE.Clock » et « PCFSoftShadowMap » au rendu : sans conséquence.

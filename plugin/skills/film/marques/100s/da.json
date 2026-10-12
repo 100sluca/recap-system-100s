@@ -1,0 +1,23 @@
+{
+	"nom": "100s (luca100s.fr)",
+	"source": "marque",
+	"couleurs": {
+		"fond": "#f2f1ed",
+		"surface": "#ffffff",
+		"encre": "#16110c",
+		"doux": "#5b544d",
+		"pale": "#9a918a",
+		"accent": "#ff5f00",
+		"surAccent": "#ffffff",
+		"accent2": "#16110c",
+		"filet": "rgba(22,17,12,0.10)"
+	},
+	"polices": {
+		"titre": {"famille": "Funnel Display", "graisse": 500},
+		"texte": {"famille": "Funnel Sans", "graisse": 400},
+		"mono": {"famille": "Martian Mono", "graisse": 400},
+		"chiffres": {"famille": "Doto", "graisse": 900}
+	},
+	"logo": null,
+	"signature": null
+}

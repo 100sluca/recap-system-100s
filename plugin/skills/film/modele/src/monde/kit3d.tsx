@@ -6,13 +6,13 @@ import * as THREE from 'three';
 import {RoundedBoxGeometry} from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
 import {TextGeometry} from 'three/examples/jsm/geometries/TextGeometry.js';
 import {FontLoader, type Font} from 'three/examples/jsm/loaders/FontLoader.js';
+import {useDA} from '../da';
 import {type Etat, type V3, ease} from './outils3d';
 
-// Le kit 3D, à la charte par défaut (tiré du film 100s v2) : un sol papier qui reçoit les ombres,
-// une trame très légère, un soleil qui suit la caméra, du brouillard couleur papier.
+// Le kit 3D du style « Monde en cubes » (tiré du film 100s v2), aux couleurs de la DA du film : un sol
+// qui reçoit les ombres, une trame légère au besoin, un soleil qui suit la caméra, du brouillard de
+// la couleur du fond. Pour le style « Studio 3D », voir src/styles/studio-3d/kit.tsx.
 // Règle Remotion : tout bouge par useCurrentFrame(), jamais par useFrame() ni une horloge.
-
-const PAPIER = '#f2f1ed';
 
 type Camera = (f: number) => {pos: V3; cible: V3; fov: number};
 
@@ -39,6 +39,7 @@ const PiloteCamera: React.FC<{readonly camera: Camera}> = ({camera}) => {
 };
 
 const Lumieres: React.FC = () => {
+	const da = useDA();
 	const soleil = useMemo(() => {
 		const l = new THREE.DirectionalLight('#ffffff', 2.1);
 		l.name = 'soleil';
@@ -51,7 +52,7 @@ const Lumieres: React.FC = () => {
 	}, []);
 	return (
 		<>
-			<hemisphereLight args={['#ffffff', '#e4ded3', 1.25]} />
+			<hemisphereLight args={['#ffffff', da.couleurs.fond, 1.25]} />
 			<primitive object={soleil} />
 			<primitive object={soleil.target} />
 		</>
@@ -59,15 +60,16 @@ const Lumieres: React.FC = () => {
 };
 
 const Sol: React.FC<{readonly trame: boolean}> = ({trame}) => {
+	const encre = useDA().couleurs.encre;
 	const grille = useMemo(() => {
-		const g = new THREE.GridHelper(600, 300, '#16110c', '#16110c');
+		const g = new THREE.GridHelper(600, 300, encre, encre);
 		const m = g.material as THREE.Material;
 		m.transparent = true;
 		m.opacity = 0.055;
 		m.depthWrite = false;
 		g.position.y = 0.005;
 		return g;
-	}, []);
+	}, [encre]);
 	return (
 		<>
 			<mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
@@ -80,7 +82,7 @@ const Sol: React.FC<{readonly trame: boolean}> = ({trame}) => {
 };
 
 /**
- * La scène : fond et brouillard papier, lumière, sol, caméra pilotée par `camera(f)`.
+ * La scène : fond et brouillard de la couleur du fond, lumière, sol, caméra pilotée par `camera(f)`.
  * Mettre les objets en enfants.
  */
 export const Scene3D: React.FC<{
@@ -88,8 +90,9 @@ export const Scene3D: React.FC<{
 	readonly children: React.ReactNode;
 	readonly brouillard?: [number, number];
 	readonly trame?: boolean;
-}> = ({camera, children, brouillard = [70, 190], trame = true}) => {
+}> = ({camera, children, brouillard = [70, 190], trame = false}) => {
 	const {width, height} = useVideoConfig();
+	const fond = useDA().couleurs.fond;
 	const c0 = camera(0);
 	return (
 		<ThreeCanvas
@@ -100,8 +103,8 @@ export const Scene3D: React.FC<{
 			gl={{antialias: true}}
 			camera={{fov: c0.fov, position: c0.pos, near: 0.1, far: 500}}
 		>
-			<color attach="background" args={[PAPIER]} />
-			<fog attach="fog" args={[PAPIER, brouillard[0], brouillard[1]]} />
+			<color attach="background" args={[fond]} />
+			<fog attach="fog" args={[fond, brouillard[0], brouillard[1]]} />
 			<PiloteCamera camera={camera} />
 			<Lumieres />
 			<Sol trame={trame} />
@@ -284,9 +287,9 @@ export const usePolice3D = (chemin = 'fonts/funnel-display-500.typeface.json') =
 
 /**
  * Un mot en lettres 3D en relief, posé sur la ligne de base (y = 0) à partir de x, avec
- * l'interlettrage du site (−0,045 em). Chaque lettre se lève à son tour (`debuts`, en images),
- * arrive orange et s'éteint vers sa couleur (la traînée). Pour le logo : « luca » gris #8f8c88,
- * « 100 » encre, puis le S en cubes à 0,125 em (le S fait 0,7 em de haut).
+ * un interlettrage de −0,045 em. Chaque lettre se lève à son tour (`debuts`, en images), arrive
+ * dans l'accent de la DA et s'éteint vers sa couleur (la traînée). La police : `police` (typeface
+ * JSON fait par outils/typeface.mjs depuis la police de titre de la DA).
  */
 export const Lettres3D: React.FC<{
 	readonly texte: string;
@@ -296,9 +299,11 @@ export const Lettres3D: React.FC<{
 	readonly profondeur: number;
 	readonly debuts: number[];
 	readonly couleurs: (THREE.Color | string)[];
-}> = ({texte, em, x, z, profondeur, debuts, couleurs}) => {
+	readonly police?: string;
+}> = ({texte, em, x, z, profondeur, debuts, couleurs, police: chemin}) => {
 	const frame = useCurrentFrame();
-	const police = usePolice3D();
+	const da = useDA();
+	const police = usePolice3D(chemin);
 	const lettres = useMemo(() => {
 		if (!police) return null;
 		const taille = em * 0.72; // un « em » de typeface vaut 1,389 fois la taille demandée
@@ -317,7 +322,7 @@ export const Lettres3D: React.FC<{
 				const a = debuts[n] ?? 0;
 				const k = ease(frame, a, a + 10);
 				if (k <= 0) return null;
-				const c = new THREE.Color('#ff5f00').lerp(new THREE.Color(couleurs[n] ?? '#16110c'), ease(frame, a + 4, a + 16));
+				const c = new THREE.Color(da.couleurs.accent).lerp(new THREE.Color(couleurs[n] ?? da.couleurs.encre), ease(frame, a + 4, a + 16));
 				return (
 					<mesh key={n} geometry={g} position={[lx, 0, z - profondeur / 2]} scale={[1, k, 1]} castShadow receiveShadow>
 						<meshStandardMaterial color={c} roughness={0.5} />

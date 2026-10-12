@@ -3,22 +3,28 @@ import React from 'react';
 import {Sequence, interpolate, staticFile, useVideoConfig} from 'remotion';
 import {FPS, MUSIQUE, PREMIER_TEMPS, clamp} from './charte';
 import {SONS} from './reglages';
+import {Voix, sousVoix} from './Voix';
 
 // La musique (son premier temps tombe sur l'image 0) et les bruitages posés sur la grille t(n).
 // Les sons sont dans public/son/ (copiés de la banque-son de l'utilisateur par outils/nouveau.mjs).
 // Sans musique (film muet) ou sans un bruitage, le composant ne joue rien.
+// S'il y a une voix off (src/pitch.ts, écrit par outils/voix.mjs), Musique la joue aussi et se
+// baisse dessous : rien d'autre à ajouter au film.
 
 export const Musique: React.FC<{readonly volume?: number}> = ({volume = 0.72}) => {
 	const {durationInFrames: fin, fps} = useVideoConfig();
-	if (!MUSIQUE) return null;
+	if (!MUSIQUE) return <Voix />;
 	return (
-		<Sequence durationInFrames={fin} premountFor={fps} name="son · musique">
-			<Audio
-				src={staticFile(MUSIQUE)}
-				trimBefore={Math.round(PREMIER_TEMPS * FPS)}
-				volume={(f) => interpolate(f, [0, 6, fin - 55, fin - 2], [0, volume, volume, 0], clamp)}
-			/>
-		</Sequence>
+		<>
+			<Sequence durationInFrames={fin} premountFor={fps} name="son · musique">
+				<Audio
+					src={staticFile(MUSIQUE)}
+					trimBefore={Math.round(PREMIER_TEMPS * FPS)}
+					volume={(f) => interpolate(f, [0, 6, fin - 55, fin - 2], [0, volume, volume, 0], clamp) * sousVoix(f)}
+				/>
+			</Sequence>
+			<Voix />
+		</>
 	);
 };
 

@@ -21,6 +21,8 @@ export const CLES = {
   banqueSon: 'ta banque de sons pour les vidéos : un dossier avec musique/ et, si tu veux, sound-effects/ et bruitages.json',
   musique: 'la musique par défaut des vidéos, un fichier (absolu, ou relatif à banqueSon)',
   ateliers: 'où créer les ateliers des vidéos (par défaut ~/recap-film)',
+  envGemini: 'pour la voix off IA des vidéos : un fichier .env qui contient GEMINI_API_KEY (le chemin du fichier, jamais la clé)',
+  voix: 'la voix IA par défaut des vidéos, une voix Gemini (par défaut Achird ; ex. Charon, Sulafat, Kore)',
 };
 
 const deplier = (v) => (typeof v === 'string' && /^~(?=$|[\\/])/.test(v) ? path.join(os.homedir(), v.slice(1)) : v);
@@ -56,7 +58,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   console.log(`Réglages : ${FICHIER}`);
   for (const [k, sens] of Object.entries(CLES)) {
     const v = r[k];
-    const etat = !v ? '(pas réglé)' : fs.existsSync(v) || (k === 'musique' && r.banqueSon && fs.existsSync(path.join(r.banqueSon, v))) ? v : `${v}  ← introuvable`;
+    const etat = !v ? '(pas réglé)' : k === 'voix' || fs.existsSync(v) || (k === 'musique' && r.banqueSon && fs.existsSync(path.join(r.banqueSon, v))) ? v : `${v}  ← introuvable`;
     console.log(`- ${k.padEnd(9)} ${etat}\n  ${sens}`);
   }
 }

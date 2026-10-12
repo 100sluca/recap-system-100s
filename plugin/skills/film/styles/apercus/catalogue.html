@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quel style pour le film ?</title>
+<style>
+  :root { color-scheme: light dark; --fond: #f5f5f3; --carte: #ffffff; --encre: #141414; --doux: #62625f; --filet: rgba(0,0,0,0.09); }
+  @media (prefers-color-scheme: dark) { :root { --fond: #121212; --carte: #1c1c1c; --encre: #f1f1ee; --doux: #a3a39f; --filet: rgba(255,255,255,0.1); } }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--fond); color: var(--encre); font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 1400px; margin: 0 auto; padding: 40px 16px 64px; }
+  h1 { font-size: 28px; margin: 0 0 6px; letter-spacing: -0.01em; }
+  .sous { color: var(--doux); margin: 0 0 28px; }
+  .grille { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 400px), 1fr)); gap: 20px; }
+  article { background: var(--carte); border: 1px solid var(--filet); border-radius: 14px; overflow: hidden; }
+  video { display: block; width: 100%; aspect-ratio: 16 / 9; background: #000; }
+  h2 { font-size: 19px; margin: 14px 16px 4px; }
+  h2 span { display: inline-block; min-width: 26px; color: var(--doux); font-variant-numeric: tabular-nums; }
+  p { margin: 0 16px 10px; }
+  dl { display: grid; grid-template-columns: auto 1fr; gap: 2px 12px; margin: 0 16px 16px; font-size: 14px; }
+  dt { color: var(--doux); }
+  dd { margin: 0; }
+  .vide { aspect-ratio: 16 / 9; display: flex; align-items: center; justify-content: center; color: var(--doux); border-bottom: 1px dashed var(--filet); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Quel style pour le film ?</h1>
+  <p class="sous">Le même contenu dans chaque style, chacun dans sa palette. Réponds avec le numéro du style (ou deux numéros à mélanger).</p>
+  <div class="grille">
+    <article>
+      <video src="keynote.mp4" poster="keynote.jpg" autoplay muted loop playsinline></video>
+      <h2><span>1</span> Keynote</h2>
+      <p>Une keynote : la fenêtre et le logo, le curseur qui clique, l'icône qui se range dans la barre de menu, le panneau de verre où l'on tape. Coupes franches sur le temps, caméra toujours en mouvement.</p>
+      <dl><dt>Pour</dt><dd>lancement de produit, app, outil, plugin : ce qu'on montre sur la scène d'une keynote</dd><dt>Rendu</dt><dd>2D, verre et brume lumineuse, flou de mouvement</dd><dt>Musique</dt><dd>115 à 128 temps/min, avec un temps fort net</dd></dl>
+    </article>
+    <article>
+      <video src="demo.mp4" poster="demo.jpg" autoplay muted loop playsinline></video>
+      <h2><span>2</span> Démo produit</h2>
+      <p>La démo, étape par étape, dans le noir : une question, la vraie fenêtre où le produit travaille, une légende dont les mots clés s'allument, le résultat, puis le logo.</p>
+      <dl><dt>Pour</dt><dd>outils, IA, SaaS, tout ce qui s'explique en « tu demandes, ça se fait »</dd><dt>Rendu</dt><dd>2D, fond noir et halo, flou de mouvement</dd><dt>Musique</dt><dd>100 à 120 temps/min, posé</dd></dl>
+    </article>
+    <article>
+      <video src="fil.mp4" poster="fil.jpg" autoplay muted loop playsinline></video>
+      <h2><span>3</span> Fil conducteur</h2>
+      <p>Un seul point de couleur traverse tout le film : il bascule un interrupteur, rebondit sur une courbe, inonde l'écran, des mots tournent autour de lui en 3D, et le film boucle.</p>
+      <dl><dt>Pour</dt><dd>une marque, une idée, un système ; tout ce qui doit paraître fluide et maîtrisé</dd><dt>Rendu</dt><dd>2D et anneau de mots en 3D, flou de mouvement</dd><dt>Musique</dt><dd>110 à 125 temps/min, un temps par geste</dd></dl>
+    </article>
+    <article>
+      <video src="teaser.mp4" poster="teaser.jpg" autoplay muted loop playsinline></video>
+      <h2><span>4</span> Teaser</h2>
+      <p>Une bande-annonce : le noir, des faisceaux de lumière, un signe qui s'embrase, deux phrases qui retournent une idée, un mur de cartes, puis le nom.</p>
+      <dl><dt>Pour</dt><dd>annoncer une nouveauté, une version, une sortie ; donner envie avant de montrer</dd><dt>Rendu</dt><dd>2D, lumière et lueurs, flou de mouvement</dd><dt>Musique</dt><dd>85 à 110 temps/min, montée lente</dd></dl>
+    </article>
+    <article>
+      <video src="sequence.mp4" poster="sequence.jpg" autoplay muted loop playsinline></video>
+      <h2><span>5</span> Plan-séquence</h2>
+      <p>Un seul plan, sans coupe : très près d'un champ de saisie qui s'écrit, recul jusqu'au téléphone, la demande part, une couleur inonde l'écran et devient le résultat ; puis de grandes phrases sur le blanc.</p>
+      <dl><dt>Pour</dt><dd>une app, un assistant, une commande, un parcours d'utilisateur de bout en bout</dd><dt>Rendu</dt><dd>2D, un plan continu, flou de mouvement</dd><dt>Musique</dt><dd>120 à 130 temps/min, un événement par temps</dd></dl>
+    </article>
+    <article class="option">
+      <div class="vide">En option · pas d'aperçu</div>
+      <h2><span>6</span> Court-métrage 3D</h2>
+      <p>Une vraie scène 3D écrite en code (Three.js) : une ville, un lieu, des personnages simples, une lumière qui change ; une petite histoire plutôt qu'une démo.</p>
+      <dl><dt>Pour</dt><dd>en option : un récit, une ambiance, un projet qu'on raconte par une histoire</dd><dt>Rendu</dt><dd>3D (Three.js), long à faire et à rendre</dd></dl>
+    </article>
+  </div>
+</main>
+</body>
+</html>
