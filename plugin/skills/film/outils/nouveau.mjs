@@ -10,8 +10,9 @@
 //    l'outil liste les morceaux de la banque-son, avec ceux que les derniers films ont déjà pris ;
 // 2. une fois le style choisi, la même commande avec --musique (un fichier, ou un nom de la
 //    banque-son) pose la musique dans l'atelier existant et mesure son tempo.
-// Jamais la même musique d'un film à l'autre par défaut : le réglage « musique » n'est plus qu'une
-// suggestion. --muet : un film sans son, assumé (105 temps par minute).
+// Jamais la même musique d'un film à l'autre : outils/musique.mjs propose des morceaux qui vont avec
+// le style et qu'aucun des derniers films n'a pris ; chaque musique posée y est notée.
+// --muet : un film sans son, assumé (105 temps par minute).
 // Les bruitages : ceux que <banque-son>/bruitages.json nomme ({"clic.wav": "sound-effects/…", …}).
 // Sans banque-son, le film n'a pas de bruitages ; le modèle se tait là où il en attendait.
 // Réglages (banqueSon, musique, ateliers) : node ../../recap-system-100s/reglages.mjs
@@ -50,19 +51,14 @@ function trouverMusique(nom) {
 	return candidats.find((c) => existsSync(c)) ?? null;
 }
 
-// Les morceaux de la banque-son, avec les films qui les ont déjà pris (commentaire de leur reglages.ts).
+// Les morceaux de la banque-son, classés pour le style (tempo) et l'historique des films
+// (outils/musique.mjs : jamais ceux des derniers films, trois propositions tirées au sort).
 function listerMusiques() {
-	const morceaux = BANQUE && existsSync(join(BANQUE, 'musique')) ? readdirSync(join(BANQUE, 'musique')).filter((f) => /\.(mp3|wav|m4a|ogg|flac)$/i.test(f)) : [];
-	const prises = {};
-	if (existsSync(RACINE))
-		for (const a of readdirSync(RACINE)) {
-			const r = join(RACINE, a, 'src', 'reglages.ts');
-			const m = existsSync(r) && readFileSync(r, 'utf-8').match(/Musique : (.+?) ;/);
-			if (m && a !== basename(atelier)) (prises[m[1]] ??= []).push(a);
-		}
-	if (morceaux.length) console.log(`Morceaux de la banque-son (${join(BANQUE, 'musique')}) :\n  ${morceaux.map((m) => (prises[m] ? `${m}  (déjà pris : ${prises[m].join(', ')})` : m)).join('\n  ')}`);
-	else console.log('Pas de banque-son réglée : demander un fichier audio dont l\'utilisateur a les droits (jamais en télécharger un), ou --muet.');
-	if (reglages.musique) console.log(`Réglage « musique » (une suggestion) : ${reglages.musique}`);
+	if (!BANQUE) {
+		console.log("Pas de banque-son réglée : demander un fichier audio dont l'utilisateur a les droits (jamais en télécharger un), ou --muet.");
+		return;
+	}
+	execFileSync(process.execPath, [join(SKILL, 'outils', 'musique.mjs'), 'choisir', ...(style ? ['--style', style] : []), '--atelier', atelier], {stdio: 'inherit'});
 }
 
 // Les réglages de la vidéo (reglages.ts) : la musique, son tempo, la durée et les bruitages.
@@ -133,8 +129,10 @@ if (arg('musique')) {
 		sons: JSON.parse(avant.match(/SONS: readonly string\[\] = (\[.*\]);/)?.[1] ?? '[]'),
 		nbTemps: Number(avant.match(/NB_TEMPS = (\d+)/)?.[1] ?? 16),
 	});
+	// L'historique des musiques, pour varier d'un film à l'autre.
+	execFileSync(process.execPath, [join(SKILL, 'outils', 'musique.mjs'), 'noter', projet, version, basename(musique)], {stdio: 'inherit'});
 } else if (neuf && !muet) {
-	console.log('Musique : pas encore choisie. La choisir selon le style (styles/<id>.md), puis relancer avec --musique "<fichier>".');
+	console.log('Musique : pas encore choisie. Une fois le style choisi : node OUTILS/musique.mjs choisir --style <id> --atelier <atelier>, puis relancer avec --musique "<fichier>".');
 	listerMusiques();
 }
 

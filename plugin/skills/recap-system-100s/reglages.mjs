@@ -19,7 +19,7 @@ export const FICHIER = path.join(DOSSIER, 'reglages.json');
 export const CLES = {
   fiches: "un dossier où recopier aussi la fiche et le lanceur de chaque projet, pour les lancer d'un double-clic (ex. ~/Desktop/Projets_Code-start)",
   banqueSon: 'ta banque de sons pour les vidéos : un dossier avec musique/ et, si tu veux, sound-effects/ et bruitages.json',
-  musique: 'la musique par défaut des vidéos, un fichier (absolu, ou relatif à banqueSon)',
+  musique: "une musique à suggérer (jamais imposée : le skill film varie la musique d'un film à l'autre, outils/musique.mjs)",
   ateliers: 'où créer les ateliers des vidéos (par défaut ~/recap-film)',
   envGemini: 'pour la voix off IA des vidéos : un fichier .env qui contient GEMINI_API_KEY (le chemin du fichier, jamais la clé)',
   voix: 'la voix IA par défaut des vidéos, une voix Gemini (par défaut Achird ; ex. Charon, Sulafat, Kore)',

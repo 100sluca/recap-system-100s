@@ -47,7 +47,7 @@ Une DA propre, un style choisi, une histoire propre au projet, une musique diff�
     possible) et `styles/apercus/` (les aperçus livrés : `catalogue.html`, `catalogue.mp4`).
   - `marques/` : les marques livrées (`100s/` : sa DA, sa charte en mouvement, son logo en pixels).
     Les marques relevées par l'utilisateur sont rangées dans `~/.claude/recap-system-100s/marques/`.
-  - `outils/` : `nouveau.mjs` (crée l'atelier, pose la DA puis la musique), `da.mjs` (relève la DA
+  - `outils/` : `nouveau.mjs` (crée l'atelier, pose la DA puis la musique), `musique.mjs` (propose une musique qui va avec le style et change d'un film à l'autre), `da.mjs` (relève la DA
     d'un site, l'installe dans un atelier), `apercus.mjs` (les styles rendus dans la DA du projet,
     pour choisir), `capturer.mjs` (captures du vrai site), `tempo.mjs`, `rendre.mjs` (planches et
     film), `livrer.mjs` (rangement + bilan), `bilan.mjs`, `typeface.mjs` (une police en lettres 3D),
@@ -99,10 +99,15 @@ Noter chaque étape dans le journal **au moment où elle commence** : c'est ce q
    conducteur, teaser, plan-séquence), le premier « (Recommandé) » avec sa raison en une ligne. Le
    court-métrage 3D s'annonce comme une option longue ; le « Monde en cubes » seulement s'il est
    demandé. Puis lire la fiche du style (`styles/<id>.md`) et `styles/README.md` (ce que Luca aime).
-   **La musique**, choisie pour ce style (tempo et caractère de la fiche) et différente du film
-   précédent : `node OUTILS/nouveau.mjs --projet <nom> --version <N> --musique "<fichier>"` (la liste
-   des morceaux et ceux déjà pris s'affichent sans `--musique`). Sans banque-son, demander un fichier
-   audio dont l'utilisateur a les droits (ne jamais en télécharger un), ou `--muet`.
+   **La musique, différente à chaque film** : `node OUTILS/musique.mjs choisir --style <id> --atelier <atelier>`
+   classe les morceaux de la banque-son (tempo qui va avec le style, ceux des derniers films écartés,
+   l'historique est dans `~/.claude/recap-system-100s/musiques.json`) et en tire trois au sort parmi
+   les meilleurs. Les proposer à l'utilisateur (dans la même question que le style quand c'est
+   possible, sinon prendre la première), puis la poser :
+   `node OUTILS/nouveau.mjs --projet <nom> --version <N> --musique "<morceau>"` (elle est notée dans
+   l'historique). Jamais la musique d'un des quatre derniers films sans que l'utilisateur la demande.
+   Sans banque-son, demander un fichier audio dont l'utilisateur a les droits (ne jamais en
+   télécharger un), ou `--muet`.
 4. **Le pitch et la voix** (étape « Pitch »). D'après `references/pitch.md`. Demander une fois,
    sauf s'il l'a déjà dit : **une voix off IA** (proposée par défaut ; voix Achird, ou son réglage
    `voix`), **sa propre voix en doublage** (recommandée pour un projet confidentiel : rien ne sort de
